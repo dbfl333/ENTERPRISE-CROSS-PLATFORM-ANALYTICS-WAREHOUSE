@@ -13,8 +13,7 @@ def run_etl_pipeline():
     
     sql_files = [
         "03_etl_pipelines/clean_shop_data.sql",
-        "03_etl_pipelines/clean_prompt_data.sql",
-        "03_etl_pipelines/clean_terrazas_data.sql",
+        "03_etl_pipelines/clean_binance_data.sql",
         "03_etl_pipelines/merge_unified_warehouse.sql"
     ]
     

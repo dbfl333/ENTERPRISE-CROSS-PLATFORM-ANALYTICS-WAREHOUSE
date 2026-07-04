@@ -1,36 +1,49 @@
--- Merge all clean tenant tables and build a unified analytical warehouse schema
+-- Merge all clean tables and build the final star schema relational warehouse
 -- Output database: 04_clean_data/analytics_production.duckdb
 
--- 1. Create Dimension Tables
+-- 1. Create Staging Schemas for Pre-launch Systems (Empty Staging Architecture)
 
--- Property Dimension (Tenant C)
-CREATE OR REPLACE TABLE dim_properties AS
-SELECT 'PROP_01' AS property_id, 'Terrazas Ocean View' AS property_name, 250.00 AS base_rate UNION ALL
-SELECT 'PROP_02', 'Terrazas Mountain Retreat', 180.00 UNION ALL
-SELECT 'PROP_03', 'Terrazas Forest Cabin', 120.00 UNION ALL
-SELECT 'PROP_04', 'Terrazas City Penthouse', 300.00 UNION ALL
-SELECT 'PROP_05', 'Terrazas Desert Oasis', 150.00;
+-- Agentic Prompt Labs Staging Schema (Tenant C)
+CREATE TABLE IF NOT EXISTS staging_prompt_telemetry (
+    request_id VARCHAR PRIMARY KEY,
+    agent_id VARCHAR,
+    prompt_tokens INT,
+    completion_tokens INT,
+    latency_ms INT,
+    http_status INT,
+    execution_timestamp TIMESTAMP
+);
 
--- User Dimension (Tenant A)
+-- Terrazas-home Staging Schema (Tenant D)
+CREATE TABLE IF NOT EXISTS staging_terrazas_bookings (
+    booking_id VARCHAR PRIMARY KEY,
+    property_id VARCHAR,
+    check_in DATE,
+    check_out DATE,
+    total_amount DECIMAL(10, 2),
+    status VARCHAR,
+    created_at TIMESTAMP
+);
+
+
+-- 2. Create Dimension Tables
+
+-- User Dimension (derived from Shopify Customer emails)
 CREATE OR REPLACE TABLE dim_users AS
 SELECT DISTINCT 
-    user_id,
-    'User_' || SUBSTR(user_id, 1, 8) AS user_name
-FROM clean_shop_sessions
-WHERE user_id IS NOT NULL;
+    MD5(customer_email) AS user_key,
+    customer_email AS email_address,
+    SUBSTRING(customer_email FROM POSITION('@' IN customer_email) + 1) AS email_domain
+FROM clean_shop_orders;
 
--- Asset Dimension (Tenant D)
+-- Asset Dimension (Binance BTC pair metadata)
 CREATE OR REPLACE TABLE dim_assets AS
-SELECT DISTINCT 
-    asset_pair,
-    CASE 
-        WHEN asset_pair IN ('BTCUSD', 'ETHUSD', 'SOLUSD') THEN 'Cryptocurrency'
-        WHEN asset_pair IN ('EURUSD') THEN 'Forex'
-        ELSE 'Equity'
-    END AS asset_class
-FROM read_csv_auto('02_raw_data/gtrend_raw_backtests.csv');
+SELECT 
+    'BTCUSDT' AS asset_pair,
+    'Bitcoin / Tether USD' AS asset_name,
+    'Cryptocurrency' AS asset_class;
 
--- Date Dimension (Shared)
+-- Date Dimension (Shared Calendar)
 CREATE OR REPLACE TABLE dim_dates AS
 WITH RECURSIVE date_range AS (
     SELECT CAST('2025-01-01' AS DATE) AS date_day
@@ -51,70 +64,36 @@ SELECT
 FROM date_range;
 
 
--- 2. Create Fact Tables
+-- 3. Create Fact Tables
 
--- Fact Shop Sessions (Tenant A)
-CREATE OR REPLACE TABLE fact_shop_sessions AS
+-- Fact Shop Orders (Tenant A)
+CREATE OR REPLACE TABLE fact_shop_orders AS
 SELECT
-    session_id,
-    user_id,
-    event_timestamp,
-    CAST(event_timestamp AS DATE) AS date_key,
-    funnel_stage,
-    price,
-    country,
-    device_type
-FROM clean_shop_sessions;
-
--- Fact Prompt Telemetry (Tenant B)
-CREATE OR REPLACE TABLE fact_prompt_telemetry AS
-SELECT
-    request_id,
-    log_timestamp,
-    CAST(log_timestamp AS DATE) AS date_key,
-    prompt_token_count,
-    completion_token_count,
-    prompt_token_count + completion_token_count AS total_token_count,
-    latency_ms,
-    is_latency_outlier,
-    http_status_code,
-    agent_sub_routine,
-    model,
-    temperature
-FROM clean_prompt_telemetry;
-
--- Fact Terrazas Bookings (Tenant C)
-CREATE OR REPLACE TABLE fact_terrazas_bookings AS
-SELECT
-    booking_id,
-    guest_name,
-    property_id,
-    created_at,
-    check_in,
-    check_out,
-    nights,
-    raw_amount,
+    order_id,
+    MD5(customer_email) AS user_key,
     total_amount,
-    status,
-    is_double_booked
-FROM clean_terrazas_bookings;
+    currency,
+    order_timestamp,
+    CAST(order_timestamp AS DATE) AS date_key,
+    financial_status
+FROM clean_shop_orders;
 
--- Fact G-Trend Quantitative Trades (Tenant D)
-CREATE OR REPLACE TABLE fact_gtrend_trades AS
+-- Fact Binance Klines (Tenant B)
+CREATE OR REPLACE TABLE fact_binance_klines AS
 SELECT
-    trade_id,
-    asset_pair,
-    CAST(entry_timestamp AS TIMESTAMP) AS entry_timestamp,
-    CAST(exit_timestamp AS TIMESTAMP) AS exit_timestamp,
-    CAST(entry_timestamp AS DATE) AS entry_date_key,
-    position_type_long_short AS position_type,
-    CAST(profit_loss_percentage AS DOUBLE) AS profit_loss_percentage,
-    CAST(max_drawdown_percentage AS DOUBLE) AS max_drawdown_percentage,
-    DATEDIFF('minute', CAST(entry_timestamp AS TIMESTAMP), CAST(exit_timestamp AS TIMESTAMP)) / 60.0 AS duration_hours
-FROM read_csv_auto('02_raw_data/gtrend_raw_backtests.csv');
+    open_timestamp,
+    CAST(open_timestamp AS DATE) AS date_key,
+    'BTCUSDT' AS asset_pair,
+    open_price,
+    high_price,
+    low_price,
+    close_price,
+    trade_volume,
+    close_timestamp,
+    total_trades
+FROM clean_binance_btc;
 
 
--- 3. Cleanup Temporary Working Tables
-DROP TABLE clean_shop_sessions;
-DROP TABLE clean_prompt_telemetry;
-DROP TABLE clean_terrazas_bookings;
+-- 4. Cleanup Working Temporary Tables
+DROP TABLE clean_shop_orders;
+DROP TABLE clean_binance_btc;

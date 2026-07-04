@@ -1,7 +1,5 @@
 import streamlit as st
-import os
 
-# Set page configuration
 st.set_page_config(
     page_title="Enterprise Analytics Warehouse",
     page_icon="⚡",
@@ -12,7 +10,6 @@ st.set_page_config(
 # Premium UI CSS styling injection
 st.markdown("""
     <style>
-    /* Dark glassmorphism card design */
     .metric-card {
         background: rgba(255, 255, 255, 0.03);
         border-radius: 12px;
@@ -44,7 +41,7 @@ st.markdown("""
 
 # Main Landing Page Content
 st.markdown("<h1 class='main-header'>Enterprise Analytics Warehouse & BI Suite</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-text'>A high-performance local corporate data warehouse consolidating multi-tenant metrics across E-Commerce, SaaS telemetry, Property bookings, and Quantitative strategies into a unified DuckDB analytical store.</p>", unsafe_allow_html=True)
+st.markdown("<p class='sub-text'>Centralized corporate data warehouse integrating live API extraction (Shopify & Binance) and pre-launch empty staging structures (Prompt Labs & Terrazas-home) inside a clean DuckDB star schema.</p>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([2, 1])
 
@@ -52,23 +49,25 @@ with col1:
     st.markdown("""
     <div class='metric-card'>
         <h3>📁 Data Pipeline Overview</h3>
-        <p>The warehouse ingests raw, disconnected, and malformed files from four distinct business channels, processes them through isolated PostgreSQL transformation scripts, and merges them into a clean dimensional warehouse model.</p>
-        <p>Select any tenant module in the sidebar to review detailed performance analytics, or visit the <b>Data Quality ETL</b> showcase to inspect raw vs. clean database tables.</p>
+        <p>The pipeline has been migrated from synthetic data generators to real-time API extraction and staging architectures:</p>
+        <ul>
+            <li><b>Live API Extraction:</b> Shopify REST Admin API and Binance Public Candlestick endpoints extract raw JSON logs directly, saving them as CSV files inside <code>02_raw_data/</code>.</li>
+            <li><b>Empty Staging Architecture:</b> Pre-launch systems (Agentic Prompt Labs and Terrazas-home) contain zero fake data. The warehouse provisions their clean relational staging target schemas, leaving them ready for Day 1 launch.</li>
+        </ul>
+        <p>Use the sidebar navigation to explore the live analytics pages and audit the staging schemas.</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    st.image("https://raw.githubusercontent.com/duckdb/duckdb/master/images/logo-horizontal.png", width=200)
 
 with col2:
     st.markdown("""
     <div class='metric-card' style='height: 100%;'>
-        <h3>🛠️ Architecture Stack</h3>
+        <h3>🛠️ Infrastructure Stack</h3>
         <ul>
-            <li><b>Core SQL Engine:</b> DuckDB</li>
+            <li><b>Core SQL Engine:</b> DuckDB (PostgreSQL syntax)</li>
             <li><b>Business Logic:</b> Python 3.12</li>
-            <li><b>Web Presentation:</b> Streamlit Wide Layout</li>
-            <li><b>Orchestration:</b> Local Pipeline Scripts</li>
-            <li><b>Data Store:</b> Star Schema Dimensions/Facts</li>
+            <li><b>API Clients:</b> <code>requests</code>, <code>json_normalize</code></li>
+            <li><b>Web Presentation:</b> Streamlit (Wide Layout)</li>
+            <li><b>Staging Tables:</b> Structured empty tables</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)

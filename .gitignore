@@ -26,3 +26,7 @@ build/
 # System & OS Exclusions
 .DS_Store
 Thumbs.db
+
+# Data Landing Zone & CSV Payload Exclusions
+*.csv
+02_raw_data/
