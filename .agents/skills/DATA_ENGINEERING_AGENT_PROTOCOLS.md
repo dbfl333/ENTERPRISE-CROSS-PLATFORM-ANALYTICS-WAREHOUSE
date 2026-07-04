@@ -45,38 +45,77 @@ pip freeze > requirements.txt
 
 ---
 
-## 4. PYTHON INGESTION & SYNTHESIS (EXACT CODE PROTOCOLS)
+## 4. PYTHON INGESTION & REAL API PIPELINES (EXACT CODE PROTOCOLS)
+You are strictly forbidden from generating fake data. You must build production API ingestion pipelines for live projects and empty staging architectures for unlaunched projects.
 
-When writing Python to generate or ingest data (e.g., using the `Faker` library), you must follow strict production patterns. Do not write generic scripts.
-
-### Step 4.1: Injecting "Realistic Messy Data"
-
-When generating synthetic data for portfolio demonstrations, explicitly inject errors to prove your ETL cleaning skills.
+### Rule 4.1: Live API Extraction (Shopify & Binance)
+Use the `requests` library to extract data. Raw JSON must be flattened and saved to `02_raw_data/` as CSV files. This acts as the "dirty data" landing zone.
 
 ```python
+# EXACT INPUT FOR SHOPIFY API EXTRACTION (AI Markets Shop)
+import requests
 import pandas as pd
-import numpy as np
-from faker import Faker
-import random
-
-fake = Faker()
-
-def generate_messy_users(num_records: int) -> pd.DataFrame:
-    data = []
-    for _ in range(num_records):
-        data.append({
-            "user_id": fake.uuid4(),
-            "email": fake.email() if random.random() > 0.05 else None, # 5% Null injection
-            "created_at": fake.date_time_this_year().isoformat(),
-            "revenue": random.choice([f"${fake.random_int(min=10, max=500)}.00", fake.random_int(min=10, max=500)]) # Mixed data types
-        })
-    return pd.DataFrame(data)
-
-# Always use logging, NEVER use print()
+import os
 import logging
+
 logging.basicConfig(level=logging.INFO)
-logging.info("Data generation complete. Exporting to /02_raw_data/")
+
+def extract_shopify_orders():
+    # Never hardcode the token. Agent must read from .env
+    token = os.getenv("SHOPIFY_ACCESS_TOKEN")
+    shop_url = "https://ai-markets.myshopify.com/admin/api/2024-01/orders.json?status=any"
+    
+    headers = {
+        "X-Shopify-Access-Token": token,
+        "Content-Type": "application/json"
+    }
+    
+    response = requests.get(shop_url, headers=headers)
+    if response.status_code == 200:
+        orders = response.json().get('orders', [])
+        df = pd.json_normalize(orders) # Flattens nested JSON into messy columns
+        df.to_csv("02_raw_data/shop_raw_orders.csv", index=False)
+        logging.info(f"Extracted {len(orders)} Shopify orders.")
+    else:
+        logging.error(f"Shopify API failed: {response.status_code}")
+
+# EXACT INPUT FOR BINANCE PUBLIC API (G-Trend Screener)
+def extract_binance_klines(symbol="BTCUSDT", interval="1d"):
+    url = f"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit=500"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        data = response.json()
+        # Binance returns arrays without column headers; must explicitly define them
+        columns = ['open_time', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_asset_volume', 'number_of_trades', 'taker_buy_base', 'taker_buy_quote', 'ignore']
+        df = pd.DataFrame(data, columns=columns)
+        df.to_csv(f"02_raw_data/binance_{symbol}_raw.csv", index=False)
+        logging.info("Extracted Binance market data.")
+
 ```
+
+### Rule 4.2: Empty Staging Architecture (Unlaunched Projects)
+
+For projects that are built but lack user data (Agentic Prompt Labs, Terrazas-home), do not fake traffic. You must build the target SQL schema in DuckDB and write the ingestion scripts to prove the pipeline is ready for Day 1 launch.
+
+```sql
+-- EXACT INPUT FOR EMPTY STAGING SCHEMA (Agentic Prompt Labs)
+CREATE TABLE IF NOT EXISTS staging_prompt_telemetry (
+    request_id VARCHAR PRIMARY KEY,
+    agent_id VARCHAR,
+    prompt_tokens INT,
+    completion_tokens INT,
+    latency_ms INT,
+    http_status INT,
+    execution_timestamp TIMESTAMP
+);
+-- Note: The table remains empty. The dashboard will display "No telemetry data yet - awaiting launch."
+
+```
+
+### Rule 4.3: Automation via GitHub Actions
+
+To keep the dashboard updated daily, configure a `.github/workflows/daily_etl.yml` file to trigger these Python ingestion scripts every night at midnight UTC, execute the DuckDB SQL transformations, and push the clean data to the Streamlit app.
 
 ---
 
