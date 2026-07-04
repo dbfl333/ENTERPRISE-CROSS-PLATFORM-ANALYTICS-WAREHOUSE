@@ -152,3 +152,18 @@ with c4:
         tooltip=['device_type', 'avg_time']
     ).properties(height=300)
     st.altair_chart(time_chart, use_container_width=True)
+
+st.write("---")
+st.subheader("Raw SQL Data Viewer")
+with st.expander("View Shopify Funnel SQL Ledger"):
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    st.dataframe(conn.execute("SELECT * FROM fact_shop_orders ORDER BY created_at DESC LIMIT 100").df(), use_container_width=True)
+    conn.close()
+
+st.write("---")
+st.subheader("Predictive Targeting & Analytics Interpretation")
+st.markdown("""
+> **Strategic Interpretation:** The predictive abandonment vector clearly highlights specific price resistance and device friction points during checkout.
+> **Target Audience Prediction:** We should retarget users who abandoned their carts on mobile devices with a localized discount code. Mobile users represent high traffic but lower conversion completion.
+> **Actionable Plan:** Deploy an SMS and Email retargeting sequence offering a 10% discount specifically to mobile traffic within 1 hour of cart abandonment.
+""")

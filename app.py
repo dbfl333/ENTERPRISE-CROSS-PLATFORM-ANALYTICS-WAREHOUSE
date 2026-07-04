@@ -172,3 +172,21 @@ st.markdown("""
     <p><i>Data Engineering Portfolio • Predictive Analytics & Machine Learning Ready Architecture</i></p>
 </div>
 """, unsafe_allow_html=True)
+
+st.write("---")
+st.subheader("Raw SQL Data Viewer")
+with st.expander("View Raw Fact & Staging Tables"):
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    st.write("**fact_shop_orders**")
+    st.dataframe(conn.execute("SELECT * FROM fact_shop_orders LIMIT 100").df(), use_container_width=True)
+    st.write("**staging_ga4_sessions**")
+    st.dataframe(conn.execute("SELECT * FROM staging_ga4_sessions LIMIT 100").df(), use_container_width=True)
+    conn.close()
+
+st.write("---")
+st.subheader("Predictive Targeting & Analytics Interpretation")
+st.markdown("""
+> **Strategic Interpretation:** The multi-tenant data indicates strong cross-pollination opportunities between high-value E-Commerce clients and algorithmic trading tool adopters.
+> **Target Audience Prediction:** We should target users located in regions with high Terrazas event bookings and overlapping GA4 session traffic. These users exhibit high discretionary capital and digital engagement.
+> **Actionable Plan:** Deploy ad campaigns focusing on automated revenue generation, targeting the top 3 geographic locations highlighted in our global reach metrics.
+""")

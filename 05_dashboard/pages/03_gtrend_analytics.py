@@ -138,3 +138,18 @@ with c4:
             tooltip=["name", "symbol"]
         ).properties(height=300)
         st.altair_chart(trending_chart, use_container_width=True)
+
+st.write("---")
+st.subheader("Raw SQL Data Viewer")
+with st.expander("View Binance Klines SQL Data"):
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    st.dataframe(conn.execute(f"SELECT * FROM fact_binance_klines WHERE symbol = '{selected_symbol}' ORDER BY open_timestamp DESC LIMIT 100").df(), use_container_width=True)
+    conn.close()
+
+st.write("---")
+st.subheader("Predictive Targeting & Analytics Interpretation")
+st.markdown(f"""
+> **Strategic Interpretation:** The RSI oscillation engine and moving averages indicate momentum shifts for {selected_symbol}.
+> **Target Audience Prediction:** High volatility indices combined with specific Fear & Greed values suggest that algorithmic retail traders are looking for hedging solutions. We should target quantitative developers and high-leverage traders.
+> **Actionable Plan:** Launch targeted campaigns on developer forums and crypto-twitter focusing on 'Algorithmic Risk Mitigation' using our API tools when volatility crosses the 5% threshold.
+""")

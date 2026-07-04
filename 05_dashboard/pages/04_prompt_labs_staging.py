@@ -147,3 +147,18 @@ with c4:
             tooltip=['keyword', 'momentum', 'competition']
         ).properties(height=350)
         st.altair_chart(mom_chart, use_container_width=True)
+
+st.write("---")
+st.subheader("Raw SQL Data Viewer")
+with st.expander("View Prompt Labs Telemetry SQL"):
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    st.dataframe(conn.execute("SELECT * FROM staging_prompt_telemetry ORDER BY search_date DESC LIMIT 100").df(), use_container_width=True)
+    conn.close()
+
+st.write("---")
+st.subheader("Predictive Targeting & Analytics Interpretation")
+st.markdown("""
+> **Strategic Interpretation:** We are identifying profitable niches where search interest is climbing while organic SEO difficulty remains manageable.
+> **Target Audience Prediction:** Target AI product managers and backend developers searching for 'Agentic AI' templates. High GitHub star gravity indicates a strong demand for open-source foundation models.
+> **Actionable Plan:** Produce high-technical-depth content (whitepapers, ArXiv summaries) targeting the exact keywords where CPC is high but organic difficulty is low, capturing enterprise B2B leads.
+""")

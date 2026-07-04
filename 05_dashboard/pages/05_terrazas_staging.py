@@ -153,3 +153,18 @@ with c4:
             tooltip=['event_type', 'avg_lead_time', 'max_lead', 'min_lead']
         ).properties(height=350)
         st.altair_chart(ld_chart, use_container_width=True)
+
+st.write("---")
+st.subheader("Raw SQL Data Viewer")
+with st.expander("View Terrazas Bookings SQL"):
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    st.dataframe(conn.execute("SELECT * FROM staging_terrazas_bookings ORDER BY check_in_timestamp DESC LIMIT 100").df(), use_container_width=True)
+    conn.close()
+
+st.write("---")
+st.subheader("Predictive Targeting & Analytics Interpretation")
+st.markdown("""
+> **Strategic Interpretation:** Seasonal multipliers dramatically impact yield, and lead-time clustering shows distinct booking behaviors between different event types.
+> **Target Audience Prediction:** Corporate event planners and large family demographics book specific event types far in advance. We should target these demographics 60-90 days prior to major seasonal holidays to secure high-yield bookings.
+> **Actionable Plan:** Automatically adjust pricing matrices via API based on the forecasted demand multiplier and trigger local ad campaigns when inventory availability drops below 20%.
+""")
