@@ -28,5 +28,5 @@ build/
 Thumbs.db
 
 # Data Landing Zone & CSV Payload Exclusions
-*.csv
-02_raw_data/
+# *.csv
+# 02_raw_data/

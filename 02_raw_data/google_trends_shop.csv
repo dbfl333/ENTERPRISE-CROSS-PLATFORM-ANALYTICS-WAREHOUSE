@@ -1,0 +1,105 @@
+trend_id,keyword_tracked,search_date,search_interest_score,geo_region,top_related_query_1,top_related_query_2,top_related_query_3,rising_query_1,rising_query_2,weekly_momentum_pct,monthly_momentum_pct
+gtr_ecommerce_shopify_20260105,shopify,2026-01-05,53,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,3.57,5.55
+gtr_ecommerce_shopify_20260112,shopify,2026-01-12,46,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,4.01,13.89
+gtr_ecommerce_shopify_20260119,shopify,2026-01-19,45,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,1.69,1.95
+gtr_ecommerce_shopify_20260126,shopify,2026-01-26,48,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,5.46,6.88
+gtr_ecommerce_shopify_20260202,shopify,2026-02-02,45,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,5.09,9.71
+gtr_ecommerce_shopify_20260209,shopify,2026-02-09,44,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-1.08,0.14
+gtr_ecommerce_shopify_20260216,shopify,2026-02-16,58,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-1.61,5.66
+gtr_ecommerce_shopify_20260223,shopify,2026-02-23,50,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,5.78,3.31
+gtr_ecommerce_shopify_20260302,shopify,2026-03-02,57,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,2.34,-1.29
+gtr_ecommerce_shopify_20260309,shopify,2026-03-09,58,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-0.84,-3.76
+gtr_ecommerce_shopify_20260316,shopify,2026-03-16,42,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,0.26,10.61
+gtr_ecommerce_shopify_20260323,shopify,2026-03-23,43,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,1.81,4.5
+gtr_ecommerce_shopify_20260330,shopify,2026-03-30,54,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,5.07,-7.9
+gtr_ecommerce_shopify_20260406,shopify,2026-04-06,52,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,1.6,10.09
+gtr_ecommerce_shopify_20260413,shopify,2026-04-13,52,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,4.35,-3.97
+gtr_ecommerce_shopify_20260420,shopify,2026-04-20,42,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-1.53,0.38
+gtr_ecommerce_shopify_20260427,shopify,2026-04-27,47,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-2.59,8.43
+gtr_ecommerce_shopify_20260504,shopify,2026-05-04,48,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,0.0,6.85
+gtr_ecommerce_shopify_20260511,shopify,2026-05-11,47,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,1.76,3.36
+gtr_ecommerce_shopify_20260518,shopify,2026-05-18,46,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-0.92,5.89
+gtr_ecommerce_shopify_20260525,shopify,2026-05-25,53,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-0.38,-1.33
+gtr_ecommerce_shopify_20260601,shopify,2026-06-01,45,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-1.03,0.94
+gtr_ecommerce_shopify_20260608,shopify,2026-06-08,47,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,2.37,-4.22
+gtr_ecommerce_shopify_20260615,shopify,2026-06-15,51,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-3.51,-6.21
+gtr_ecommerce_shopify_20260622,shopify,2026-06-22,42,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,0.71,1.02
+gtr_ecommerce_shopify_20260629,shopify,2026-06-29,47,Global,best shopify,how to use shopify,free shopify,shopify tutorial 2026,shopify online,-3.28,-7.33
+gtr_ecommerce_e-commerce_20260105,e-commerce,2026-01-05,62,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-3.97,-7.52
+gtr_ecommerce_e-commerce_20260112,e-commerce,2026-01-12,59,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-0.27,6.03
+gtr_ecommerce_e-commerce_20260119,e-commerce,2026-01-19,67,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,2.29,3.2
+gtr_ecommerce_e-commerce_20260126,e-commerce,2026-01-26,71,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,4.93,-8.78
+gtr_ecommerce_e-commerce_20260202,e-commerce,2026-02-02,74,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,3.37,-9.87
+gtr_ecommerce_e-commerce_20260209,e-commerce,2026-02-09,63,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,2.17,5.98
+gtr_ecommerce_e-commerce_20260216,e-commerce,2026-02-16,62,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,1.19,12.07
+gtr_ecommerce_e-commerce_20260223,e-commerce,2026-02-23,59,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,3.16,-9.99
+gtr_ecommerce_e-commerce_20260302,e-commerce,2026-03-02,63,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,0.45,1.89
+gtr_ecommerce_e-commerce_20260309,e-commerce,2026-03-09,68,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-0.7,-6.44
+gtr_ecommerce_e-commerce_20260316,e-commerce,2026-03-16,71,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,2.41,6.99
+gtr_ecommerce_e-commerce_20260323,e-commerce,2026-03-23,73,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,3.39,3.55
+gtr_ecommerce_e-commerce_20260330,e-commerce,2026-03-30,58,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,4.65,0.71
+gtr_ecommerce_e-commerce_20260406,e-commerce,2026-04-06,72,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,4.29,0.41
+gtr_ecommerce_e-commerce_20260413,e-commerce,2026-04-13,60,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,3.29,-8.6
+gtr_ecommerce_e-commerce_20260420,e-commerce,2026-04-20,69,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-3.75,13.68
+gtr_ecommerce_e-commerce_20260427,e-commerce,2026-04-27,73,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,1.07,6.3
+gtr_ecommerce_e-commerce_20260504,e-commerce,2026-05-04,73,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,0.65,8.55
+gtr_ecommerce_e-commerce_20260511,e-commerce,2026-05-11,72,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,3.51,-0.3
+gtr_ecommerce_e-commerce_20260518,e-commerce,2026-05-18,64,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,0.3,3.61
+gtr_ecommerce_e-commerce_20260525,e-commerce,2026-05-25,73,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,4.89,13.01
+gtr_ecommerce_e-commerce_20260601,e-commerce,2026-06-01,64,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,2.27,11.41
+gtr_ecommerce_e-commerce_20260608,e-commerce,2026-06-08,58,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-2.85,7.51
+gtr_ecommerce_e-commerce_20260615,e-commerce,2026-06-15,63,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,6.0,14.25
+gtr_ecommerce_e-commerce_20260622,e-commerce,2026-06-22,70,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-1.62,6.0
+gtr_ecommerce_e-commerce_20260629,e-commerce,2026-06-29,70,Global,best e-commerce,how to use e-commerce,free e-commerce,e-commerce tutorial 2026,e-commerce online,-0.9,-9.57
+gtr_ecommerce_online_shop_20260105,online shop,2026-01-05,51,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,5.0,-8.73
+gtr_ecommerce_online_shop_20260112,online shop,2026-01-12,44,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,3.47,-4.99
+gtr_ecommerce_online_shop_20260119,online shop,2026-01-19,46,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-2.21,-1.09
+gtr_ecommerce_online_shop_20260126,online shop,2026-01-26,54,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-3.5,13.07
+gtr_ecommerce_online_shop_20260202,online shop,2026-02-02,41,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-0.67,12.15
+gtr_ecommerce_online_shop_20260209,online shop,2026-02-09,46,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,0.23,-7.38
+gtr_ecommerce_online_shop_20260216,online shop,2026-02-16,51,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,4.45,2.88
+gtr_ecommerce_online_shop_20260223,online shop,2026-02-23,47,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-0.13,14.53
+gtr_ecommerce_online_shop_20260302,online shop,2026-03-02,57,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-3.31,-4.52
+gtr_ecommerce_online_shop_20260309,online shop,2026-03-09,47,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,1.09,6.12
+gtr_ecommerce_online_shop_20260316,online shop,2026-03-16,50,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-3.56,6.78
+gtr_ecommerce_online_shop_20260323,online shop,2026-03-23,48,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,4.84,-5.14
+gtr_ecommerce_online_shop_20260330,online shop,2026-03-30,45,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-0.27,-4.47
+gtr_ecommerce_online_shop_20260406,online shop,2026-04-06,56,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,1.41,-3.67
+gtr_ecommerce_online_shop_20260413,online shop,2026-04-13,50,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,2.92,13.13
+gtr_ecommerce_online_shop_20260420,online shop,2026-04-20,50,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,2.21,10.57
+gtr_ecommerce_online_shop_20260427,online shop,2026-04-27,45,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,0.4,-3.29
+gtr_ecommerce_online_shop_20260504,online shop,2026-05-04,58,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,3.33,10.76
+gtr_ecommerce_online_shop_20260511,online shop,2026-05-11,51,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,1.65,-0.85
+gtr_ecommerce_online_shop_20260518,online shop,2026-05-18,58,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-2.52,6.86
+gtr_ecommerce_online_shop_20260525,online shop,2026-05-25,52,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-2.52,10.91
+gtr_ecommerce_online_shop_20260601,online shop,2026-06-01,49,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,3.95,2.01
+gtr_ecommerce_online_shop_20260608,online shop,2026-06-08,45,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,1.32,5.01
+gtr_ecommerce_online_shop_20260615,online shop,2026-06-15,54,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,5.61,-8.48
+gtr_ecommerce_online_shop_20260622,online shop,2026-06-22,57,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,-2.98,6.75
+gtr_ecommerce_online_shop_20260629,online shop,2026-06-29,50,Global,best online shop,how to use online shop,free online shop,online shop tutorial 2026,online shop online,3.52,-2.32
+gtr_ecommerce_dropshipping_20260105,dropshipping,2026-01-05,44,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-0.93,3.37
+gtr_ecommerce_dropshipping_20260112,dropshipping,2026-01-12,43,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,5.75,-6.68
+gtr_ecommerce_dropshipping_20260119,dropshipping,2026-01-19,52,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,2.53,14.21
+gtr_ecommerce_dropshipping_20260126,dropshipping,2026-01-26,47,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-0.74,3.56
+gtr_ecommerce_dropshipping_20260202,dropshipping,2026-02-02,57,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,0.02,-8.99
+gtr_ecommerce_dropshipping_20260209,dropshipping,2026-02-09,49,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,2.94,-4.71
+gtr_ecommerce_dropshipping_20260216,dropshipping,2026-02-16,59,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-3.82,-7.94
+gtr_ecommerce_dropshipping_20260223,dropshipping,2026-02-23,43,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-2.87,14.72
+gtr_ecommerce_dropshipping_20260302,dropshipping,2026-03-02,49,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,0.86,-5.73
+gtr_ecommerce_dropshipping_20260309,dropshipping,2026-03-09,53,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-2.18,14.23
+gtr_ecommerce_dropshipping_20260316,dropshipping,2026-03-16,52,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-3.03,2.58
+gtr_ecommerce_dropshipping_20260323,dropshipping,2026-03-23,60,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,5.62,12.03
+gtr_ecommerce_dropshipping_20260330,dropshipping,2026-03-30,56,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,5.47,1.0
+gtr_ecommerce_dropshipping_20260406,dropshipping,2026-04-06,56,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,5.51,5.53
+gtr_ecommerce_dropshipping_20260413,dropshipping,2026-04-13,46,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,0.77,7.25
+gtr_ecommerce_dropshipping_20260420,dropshipping,2026-04-20,60,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-2.01,6.45
+gtr_ecommerce_dropshipping_20260427,dropshipping,2026-04-27,53,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,0.6,2.74
+gtr_ecommerce_dropshipping_20260504,dropshipping,2026-05-04,56,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-1.56,5.57
+gtr_ecommerce_dropshipping_20260511,dropshipping,2026-05-11,52,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,3.83,0.28
+gtr_ecommerce_dropshipping_20260518,dropshipping,2026-05-18,53,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,5.51,-3.39
+gtr_ecommerce_dropshipping_20260525,dropshipping,2026-05-25,45,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-0.32,9.56
+gtr_ecommerce_dropshipping_20260601,dropshipping,2026-06-01,45,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-1.89,4.13
+gtr_ecommerce_dropshipping_20260608,dropshipping,2026-06-08,59,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,1.22,-4.2
+gtr_ecommerce_dropshipping_20260615,dropshipping,2026-06-15,60,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,-0.52,-5.52
+gtr_ecommerce_dropshipping_20260622,dropshipping,2026-06-22,54,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,5.73,-1.5
+gtr_ecommerce_dropshipping_20260629,dropshipping,2026-06-29,47,Global,best dropshipping,how to use dropshipping,free dropshipping,dropshipping tutorial 2026,dropshipping online,2.33,11.26
