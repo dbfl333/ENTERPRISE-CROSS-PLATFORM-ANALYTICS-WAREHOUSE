@@ -6,161 +6,135 @@ import altair as alt
 
 st.set_page_config(page_title="G-Trend Screener - Binance Market", layout="wide")
 
+st.markdown("""
+    <style>
+    .metric-card {
+        background: linear-gradient(145deg, rgba(30, 30, 40, 0.8), rgba(20, 20, 30, 0.9));
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        text-align: center;
+        transition: transform 0.2s;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(228, 255, 0, 0.4);
+    }
+    .metric-title {
+        font-size: 0.9rem;
+        color: #B2B2B2;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+    .metric-val {
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #FFD700, #FF8C00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .chart-container {
+        background: rgba(20, 20, 30, 0.6);
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 20px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.sidebar.header("📊 Market Selector")
 selected_symbol = st.sidebar.selectbox("Select Asset Pair", ["BTCUSDT", "ETHUSDT", "SOLUSDT"])
 
-st.title(f"📈 {selected_symbol} Market Data & Screener")
-st.markdown(f"Historical {selected_symbol} daily candlestick indicators, network metrics, and live strategy evaluations.")
+st.markdown(f"<h1 style='font-weight: 900; background: linear-gradient(90deg, #FFD700, #FF8C00); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>{selected_symbol} Quantitative Screener</h1>", unsafe_allow_html=True)
+st.markdown("<p style='color: #B2B2B2;'>Real-time cryptocurrency analytics, technical indicators, and sentiment prediction algorithms.</p>", unsafe_allow_html=True)
 
 DB_PATH = "04_clean_data/analytics_production.duckdb"
 if not os.path.exists(DB_PATH):
-    st.warning("⚠️ Production database not found. Please run the ETL pipeline.")
+    st.warning("Production database not found. Please run the ETL pipeline.")
     st.stop()
-
 
 @st.cache_data
 def load_latest_signal(symbol):
     conn = duckdb.connect(DB_PATH, read_only=True)
-    result = conn.execute(f"""
-        SELECT close_price, rsi_14, macd_line, macd_signal, sma_20, sma_50,
-               screener_good_pair_flag, timestamp_fetched, daily_change_percent, volatility_index,
-               fng_value, fng_classification, btc_hash_rate, btc_market_price_usd
-        FROM fact_binance_klines
-        WHERE symbol = '{symbol}'
-        ORDER BY open_timestamp DESC
-        LIMIT 1
-    """).fetchone()
+    result = conn.execute(f"SELECT close_price, rsi_14, macd_line, sma_20, fng_value, fng_classification, btc_hash_rate, volatility_index FROM fact_binance_klines WHERE symbol = '{symbol}' ORDER BY open_timestamp DESC LIMIT 1").fetchone()
     conn.close()
     return result
-
-
-@st.cache_data
-def load_pair_stats(symbol):
-    conn = duckdb.connect(DB_PATH, read_only=True)
-    result = conn.execute(f"""
-        SELECT COUNT(*) as total_candles, AVG(close_price) as avg_close,
-               MAX(high_price) as max_high, MIN(low_price) as min_low
-        FROM fact_binance_klines
-        WHERE symbol = '{symbol}'
-    """).fetchone()
-    conn.close()
-    return result
-
 
 @st.cache_data
 def load_candles(symbol):
     conn = duckdb.connect(DB_PATH, read_only=True)
-    df = conn.execute(f"""
-        SELECT open_timestamp as date, open_price, high_price, low_price,
-               close_price, trade_volume, sma_20, sma_50, rsi_14
-        FROM fact_binance_klines
-        WHERE symbol = '{symbol}'
-        ORDER BY open_timestamp ASC
-    """).df()
+    df = conn.execute(f"SELECT open_timestamp as date, close_price, rsi_14, sma_20, sma_50, trade_volume FROM fact_binance_klines WHERE symbol = '{symbol}' ORDER BY open_timestamp ASC").df()
     conn.close()
     return df
-
 
 @st.cache_data
 def load_trending_narratives():
     conn = duckdb.connect(DB_PATH, read_only=True)
     df = conn.execute("SELECT trending_coin_name as name, trending_coin_symbol as symbol, 1.0 AS weight FROM fact_binance_klines").df()
     conn.close()
-    # Unique coins
-    df = df.drop_duplicates(subset=["name"])
-    return df
-
-
-@st.cache_data
-def load_ledger(symbol):
-    conn = duckdb.connect(DB_PATH, read_only=True)
-    df = conn.execute(f"""
-        SELECT open_timestamp, open_price, high_price, low_price, close_price,
-               trade_volume, rsi_14, macd_line, macd_signal, sma_20, sma_50,
-               daily_change_percent, volatility_index, fng_value, fng_classification,
-               btc_hash_rate, btc_market_price_usd
-        FROM fact_binance_klines
-        WHERE symbol = '{symbol}'
-        ORDER BY open_timestamp DESC
-        LIMIT 100
-    """).df()
-    conn.close()
-    return df
-
-
-stats = load_pair_stats(selected_symbol)
-
-# ==================== TIER 1: VISUAL METRIC OPERATIONS ====================
-col1, col2, col3, col4 = st.columns(4)
-col1.metric("Historical Candlesticks", f"{stats[0]:,} days")
-col2.metric("Average Close Price", f"${stats[1]:,.2f}")
-col3.metric("Max High (Period)", f"${stats[2]:,.2f}")
-col4.metric("Min Low (Period)", f"${stats[3]:,.2f}")
-
-st.write("---")
+    return df.drop_duplicates(subset=["name"])
 
 latest = load_latest_signal(selected_symbol)
-if latest:
-    c_price, rsi, macd, sig, sma20, sma50, good_pair, t_stamp, change, vol, fng_val, fng_class, hr, hr_price = latest
-    col_sig, col_m1, col_m2, col_m3 = st.columns([1.5, 1, 1, 1])
-    with col_sig:
-        st.success(f"🟢 **MARKET SENTIMENT: {fng_class} (F&G: {fng_val})**\n\nActive crypto market index suggests stability.")
-    with col_m1:
-        st.metric("Latest Close", f"${c_price:,.2f}", f"{change:+.2f}% (24h)")
-    with col_m2:
-        st.metric("Volatility Index", f"{vol:.2f}%")
-    with col_m3:
-        st.metric("Bitcoin Hash Rate", f"{hr/1e6:.1f}M TH/s" if hr else "unknown")
-    st.caption(f"Last updated: {t_stamp}")
+c_price, rsi, macd, sma20, fng_val, fng_class, hr, vol = latest if latest else (0,0,0,0,0,"N/A",0,0)
 
-st.write("---")
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.markdown(f"<div class='metric-card'><div class='metric-title'>Latest Price</div><div class='metric-val'>${c_price:,.2f}</div><div style='color: #00FF66; font-size: 0.85rem;'>Live Data</div></div>", unsafe_allow_html=True)
+with col2:
+    st.markdown(f"<div class='metric-card'><div class='metric-title'>RSI (14)</div><div class='metric-val'>{rsi:.1f}</div><div style='color: #FFB300; font-size: 0.85rem;'>Momentum</div></div>", unsafe_allow_html=True)
+with col3:
+    st.markdown(f"<div class='metric-card'><div class='metric-title'>Sentiment Score</div><div class='metric-val'>{fng_val}</div><div style='color: #FF4500; font-size: 0.85rem;'>{fng_class}</div></div>", unsafe_allow_html=True)
+with col4:
+    st.markdown(f"<div class='metric-card'><div class='metric-title'>Volatility</div><div class='metric-val'>{vol:.2f}%</div><div style='color: #00E5FF; font-size: 0.85rem;'>Risk Metric</div></div>", unsafe_allow_html=True)
 
 candles_df = load_candles(selected_symbol)
 candles_df['date_str'] = candles_df['date'].dt.strftime('%Y-%m-%d')
 
-st.subheader(f"{selected_symbol} Historical Close Price Trend with SMA Overlays")
-base = alt.Chart(candles_df).encode(x=alt.X("date_str:N", title="Date (UTC)"))
-close_line = base.mark_line(color="#00E5FF", strokeWidth=2).encode(
-    y=alt.Y("close_price:Q", title="Price ($)", scale=alt.Scale(zero=False)),
-    tooltip=["date_str", "close_price"]
-)
-sma20_line = base.mark_line(color="#FFD700", strokeDash=[4, 4]).encode(y=alt.Y("sma_20:Q"), tooltip=["date_str", "sma_20"])
-sma50_line = base.mark_line(color="#FF4500", strokeDash=[2, 2]).encode(y=alt.Y("sma_50:Q"), tooltip=["date_str", "sma_50"])
-st.altair_chart(alt.layer(close_line, sma20_line, sma50_line).properties(height=320), use_container_width=True)
-
-st.write("---")
-c1, c2 = st.columns([1, 1])
+c1, c2 = st.columns([2, 1])
 
 with c1:
-    st.subheader("CoinGecko Trending Narratives")
-    trending_df = load_trending_narratives()
-    if not trending_df.empty:
-        trending_chart = alt.Chart(trending_df).mark_arc(innerRadius=40).encode(
-            theta=alt.Theta("weight:Q"),
-            color=alt.Color("name:N", scale=alt.Scale(scheme="category20")),
-            tooltip=["name", "symbol"]
-        ).properties(height=260)
-        st.altair_chart(trending_chart, use_container_width=True)
-    else:
-        st.info("No CoinGecko trending narratives found.")
+    st.markdown(f"<div class='chart-container'><h3>📈 {selected_symbol} Predictive Moving Averages</h3></div>", unsafe_allow_html=True)
+    base = alt.Chart(candles_df).encode(x=alt.X("date_str:N", title="Date (UTC)"))
+    close_line = base.mark_line(color="#FFD700", strokeWidth=3).encode(y=alt.Y("close_price:Q", title="Price ($)", scale=alt.Scale(zero=False)))
+    sma20_line = base.mark_line(color="#00E5FF", strokeDash=[4, 4]).encode(y=alt.Y("sma_20:Q"))
+    sma50_line = base.mark_line(color="#FF4500", strokeDash=[2, 2]).encode(y=alt.Y("sma_50:Q"))
+    st.altair_chart(alt.layer(close_line, sma20_line, sma50_line).properties(height=350), use_container_width=True)
 
 with c2:
-    st.subheader("Historical Candlestick & Indicator Ledger")
-    st.dataframe(load_ledger(selected_symbol), use_container_width=True)
+    st.markdown("<div class='chart-container'><h3>🔥 RSI Oscillation Engine</h3></div>", unsafe_allow_html=True)
+    rsi_chart = alt.Chart(candles_df).mark_area(opacity=0.3, color="#FF00E5").encode(
+        x=alt.X("date_str:N", title="Date"),
+        y=alt.Y("rsi_14:Q", title="RSI", scale=alt.Scale(domain=[0, 100])),
+        tooltip=["date_str", "rsi_14"]
+    ).properties(height=350)
+    st.altair_chart(rsi_chart, use_container_width=True)
 
 st.write("---")
+c3, c4 = st.columns([1, 1])
+with c3:
+    st.markdown("<div class='chart-container'><h3>🔍 On-Chain Network Hash Rate Analysis</h3></div>", unsafe_allow_html=True)
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    hr_df = conn.execute("SELECT open_timestamp::DATE as date, AVG(btc_hash_rate) as hr FROM fact_binance_klines WHERE btc_hash_rate IS NOT NULL GROUP BY date ORDER BY date").df()
+    conn.close()
+    if not hr_df.empty:
+        hr_df['date_str'] = pd.to_datetime(hr_df['date']).dt.strftime('%Y-%m-%d')
+        hr_chart = alt.Chart(hr_df).mark_bar(color="#FF8C00").encode(
+            x=alt.X("date_str:N", title="Date"),
+            y=alt.Y("hr:Q", title="Hash Rate"),
+            tooltip=["date_str", "hr"]
+        ).properties(height=300)
+        st.altair_chart(hr_chart, use_container_width=True)
 
-# ==================== TIER 2: ACTIONABLE MONETIZATION STRATEGY ====================
-st.subheader("Monetization Insights & Ad Copy Generation")
-
-fng_sentiment = fng_class if latest else "Neutral"
-btc_price_ref = c_price if latest else 60000.0
-
-st.markdown(f"""
-> **Target Audience Profile:** Algorithmic retail investors and high-leverage crypto traders monitoring **{selected_symbol}** changes and global network health indicators.
-> **Identified Market Vulnerability:** Cryptocurrency markets demonstrate a **{fng_sentiment}** sentiment profile. Volatility indexes tracking at **{vol:.2f}%** present a prime opportunity to market automated breakout trading tools.
-
-#### Recommended Ad Copy Hooks:
-1. **Hook 1 (Emotional Angle):** "Stop trading on fear. When the market is in a **{fng_sentiment}** state, let mathematically backed algorithms handle your execution."
-2. **Hook 2 (Data-Driven Angle):** "With {selected_symbol} trading at ${btc_price_ref:,.2f} and volatility tracking at {vol:.2f}%, manual trading can't keep up. Get our custom indicators now."
-""")
+with c4:
+    st.markdown("<div class='chart-container'><h3>🧬 Altcoin Narrative Weighting</h3></div>", unsafe_allow_html=True)
+    trending_df = load_trending_narratives()
+    if not trending_df.empty:
+        trending_chart = alt.Chart(trending_df).mark_arc(innerRadius=60).encode(
+            theta=alt.Theta("weight:Q"),
+            color=alt.Color("name:N", scale=alt.Scale(scheme="category10")),
+            tooltip=["name", "symbol"]
+        ).properties(height=300)
+        st.altair_chart(trending_chart, use_container_width=True)
