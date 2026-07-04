@@ -269,3 +269,10 @@ To construct projects matching the architectural standards outlined in the found
 
 * **URL:** https://github.com/lukebarousse/SQL_Data_Engineering_Course
 * **Agent Instruction:** If the user requests standard templates, data configurations, or shell scripts referenced in the bootcamp, navigate to this GitHub URL, analyze the codebase, and extract the necessary logic to apply to the current project.
+
+---
+
+## 9. PORTFOLIO DOCUMENTATION STANDARDS & TEMPLATES
+
+When deploying documentation across sibling project directories, the agent must not write brief summaries. The agent must refer to the extensive corporate-grade templates defined in `PORTFOLIO_README_TEMPLATES.md` to build out exhaustive documentation covering system objectives, business logic, architectures, and data schemas.
+

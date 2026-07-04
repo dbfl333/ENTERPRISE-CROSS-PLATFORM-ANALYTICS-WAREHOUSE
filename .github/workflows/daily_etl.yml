@@ -1,0 +1,53 @@
+name: Nightly ETL pipeline Ingestion
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at 12:00 AM UTC
+  workflow_dispatch:      # Allows manual execution from the GitHub Actions tab
+
+jobs:
+  run-etl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install duckdb pandas requests
+
+      - name: Execute Live API Ingestion Pipelines
+        env:
+          SHOPIFY_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ACCESS_TOKEN }}
+          SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
+        run: |
+          # Write environment variables to local .env for extractors
+          echo "SHOPIFY_ACCESS_TOKEN=$SHOPIFY_ACCESS_TOKEN" > .env
+          echo "SHOPIFY_STORE_DOMAIN=${SHOPIFY_STORE_DOMAIN:-14e953-bc.myshopify.com}" >> .env
+          
+          # Run Shopify and Binance API Extractors
+          python 01_api_ingestion/shopify_extractor.py
+          python 01_api_ingestion/binance_extractor.py
+
+      - name: Compile Analytical Warehouse (DuckDB ETL)
+        run: |
+          python run_etl.py
+
+      - name: Commit and Push Updated Data Tracking
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # We only commit changes to raw tracking data (if tracking is tracked) 
+          # and any pipeline artifacts that are not excluded by .gitignore.
+          # Note: *.duckdb and *.csv are excluded in gitignore by design to keep them locally isolated.
+          git add -A
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated ETL: Nightly sync complete" && git push)
