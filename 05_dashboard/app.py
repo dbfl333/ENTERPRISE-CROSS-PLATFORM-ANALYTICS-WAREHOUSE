@@ -20,14 +20,14 @@ DB_PATH = '04_clean_data/analytics_production.duckdb'
 @st.cache_data(ttl=300)
 def load_kpis():
     conn = duckdb.connect(DB_PATH, read_only=True)
-    shop = conn.execute("SELECT COUNT(*), COALESCE(SUM(total_amount), 0) FROM fact_shop_orders").fetchone()
-    binance = conn.execute("SELECT close_price, fng_value, fng_classification FROM fact_binance_klines ORDER BY open_timestamp DESC LIMIT 1").fetchone()
+    shop = conn.execute("SELECT COUNT(*), COALESCE(SUM(total_price), 0) FROM fact_shop_orders").fetchone()
+    binance = conn.execute("SELECT last_price FROM fact_binance_klines ORDER BY open_time DESC LIMIT 1").fetchone()
     prompt = conn.execute("SELECT COUNT(*), AVG(search_interest_score) FROM staging_prompt_telemetry").fetchone()
     terrazas = conn.execute("SELECT COUNT(*), COALESCE(SUM(total_gross_amount), 0) FROM staging_terrazas_bookings").fetchone()
     
     # Load some real data for overview charts
-    shop_df = conn.execute("SELECT created_at, total_amount FROM fact_shop_orders").df()
-    binance_df = conn.execute("SELECT open_timestamp, close_price FROM fact_binance_klines ORDER BY open_timestamp DESC LIMIT 100").df()
+    shop_df = conn.execute("SELECT created_at, total_price FROM fact_shop_orders").df()
+    binance_df = conn.execute("SELECT open_time, last_price FROM fact_binance_klines ORDER BY open_time DESC LIMIT 100").df()
     
     conn.close()
     return shop, binance, prompt, terrazas, shop_df, binance_df
@@ -37,7 +37,7 @@ try:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("AI Shop Rev (Shopify)", f"${shop[1]:,.2f}")
     if binance:
-        c2.metric("BTC (Binance)", f"${binance[0]:,.2f}", binance[2])
+        c2.metric("BTC (Binance)", f"${binance[0]:,.2f}", 'Live')
     c3.metric("Prompt API (GitHub)", f"{prompt[0]} reqs")
     c4.metric("Terrazas (Bookings)", f"${terrazas[1]:,.2f}")
     
@@ -47,12 +47,12 @@ try:
     
     with col_a:
         if not shop_df.empty:
-            c = alt.Chart(shop_df).mark_line().encode(x='created_at', y='total_amount').properties(height=200, title="Shopify Revenue Timeline")
+            c = alt.Chart(shop_df).mark_line().encode(x='created_at', y='total_price').properties(height=200, title="Shopify Revenue Timeline")
             st.altair_chart(c, use_container_width=True)
             
     with col_b:
         if not binance_df.empty:
-            c = alt.Chart(binance_df).mark_area(opacity=0.5, color='orange').encode(x='open_timestamp', y=alt.Y('close_price', scale=alt.Scale(zero=False))).properties(height=200, title="BTC Price Action")
+            c = alt.Chart(binance_df).mark_area(opacity=0.5, color='orange').encode(x='open_time', y=alt.Y('last_price', scale=alt.Scale(zero=False))).properties(height=200, title="BTC Price Action")
             st.altair_chart(c, use_container_width=True)
 
     st.write("---")

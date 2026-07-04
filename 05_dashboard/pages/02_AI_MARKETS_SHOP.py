@@ -27,12 +27,12 @@ df_ga4 = conn.execute("SELECT * FROM staging_ga4_sessions").df()
 
 c1, c2, c3 = st.columns(3)
 with c1:
-    if 'total_amount' in df_orders.columns:
-        c = alt.Chart(df_orders).mark_bar().encode(alt.X('total_amount', bin=True), y='count()').properties(height=200, title="Order Values")
+    if 'total_price' in df_orders.columns:
+        c = alt.Chart(df_orders).mark_bar().encode(alt.X('total_price', bin=True), y='count()').properties(height=200, title="Order Values")
         st.altair_chart(c, use_container_width=True)
 with c2:
-    if 'created_at' in df_orders.columns and 'total_amount' in df_orders.columns:
-        c = alt.Chart(df_orders).mark_line().encode(x='created_at', y='total_amount').properties(height=200, title="Revenue Timeline")
+    if 'created_at' in df_orders.columns and 'total_price' in df_orders.columns:
+        c = alt.Chart(df_orders).mark_line().encode(x='created_at', y='total_price').properties(height=200, title="Revenue Timeline")
         st.altair_chart(c, use_container_width=True)
 with c3:
     if not df_ga4.empty:

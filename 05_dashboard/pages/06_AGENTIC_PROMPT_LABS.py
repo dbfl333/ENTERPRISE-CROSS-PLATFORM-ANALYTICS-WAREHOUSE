@@ -27,7 +27,7 @@ if not df_telemetry.empty:
     c1, c2 = st.columns(2)
     with c1:
         # BUG FIX: Removed 'keyword' from tooltip to fix ValueError
-        c = alt.Chart(df_telemetry).mark_point(filled=True, size=60).encode(x='keyword_difficulty', y='cpc_usd', color='search_interest_score').properties(height=200, title="Difficulty vs CPC Scatter")
+        c = alt.Chart(df_telemetry).mark_point(filled=True, size=60).encode(x='organic_difficulty', y='estimated_cpc_high', color='search_interest_score').properties(height=200, title="Difficulty vs CPC Scatter")
         st.altair_chart(c, use_container_width=True)
     with c2:
         c = alt.Chart(df_telemetry).mark_bar().encode(alt.X('search_interest_score', bin=True), y='count()').properties(height=200, title="Search Interest Distribution")

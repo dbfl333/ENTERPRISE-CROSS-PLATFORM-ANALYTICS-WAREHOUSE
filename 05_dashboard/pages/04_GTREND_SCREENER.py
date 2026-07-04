@@ -26,11 +26,11 @@ df_klines = conn.execute("SELECT * FROM fact_binance_klines").df()
 c1, c2 = st.columns(2)
 with c1:
     if not df_klines.empty:
-        c = alt.Chart(df_klines).mark_line(color='gold').encode(x='open_timestamp', y=alt.Y('close_price', scale=alt.Scale(zero=False))).properties(height=200, title="Price Action")
+        c = alt.Chart(df_klines).mark_line(color='gold').encode(x='open_time', y=alt.Y('last_price', scale=alt.Scale(zero=False))).properties(height=200, title="Price Action")
         st.altair_chart(c, use_container_width=True)
 with c2:
     if not df_klines.empty:
-        c = alt.Chart(df_klines).mark_bar(opacity=0.6).encode(x='open_timestamp', y='volume').properties(height=200, title="Volume Profile")
+        c = alt.Chart(df_klines).mark_bar(opacity=0.6).encode(x='open_time', y='volume').properties(height=200, title="Volume Profile")
         st.altair_chart(c, use_container_width=True)
 
 # --- Source 2: CoinGecko Bitcoin Trends ---
