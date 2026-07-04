@@ -1,4 +1,6 @@
-import streamlit as st
+import os
+
+code_app = '''import streamlit as st
 import duckdb
 import pandas as pd
 import altair as alt
@@ -29,7 +31,7 @@ def get_wren_engine():
     manifest_b64 = base64.b64encode(manifest_data.encode('utf-8')).decode('utf-8')
     
     connection_info = {
-        "url": "C:\\Users\\usuario\\Documents\\GitHub\\enterprise-cross-platform-analytics-warehouse\\04_clean_data",
+        "url": "C:\\\\Users\\\\usuario\\\\Documents\\\\GitHub\\\\enterprise-cross-platform-analytics-warehouse\\\\04_clean_data",
         "format": "duckdb"
     }
     
@@ -127,3 +129,9 @@ try:
         st.error("WrenAI Engine could not be loaded. Manifest target/mdl.json is missing.")
 except Exception as e:
     st.error(f"Error loading WrenAI engine data: {e}")
+'''
+
+with open('05_dashboard/app.py', 'w', encoding='utf-8') as f:
+    f.write(code_app)
+
+print("Successfully integrated WrenEngine semantic layer and playground into Streamlit app.py!")
