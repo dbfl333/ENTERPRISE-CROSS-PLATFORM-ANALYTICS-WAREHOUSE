@@ -1,0 +1,7 @@
+schema_version: 1
+apps:
+  my_bi_app:
+    source: apps/my_bi_app
+    status: built
+    created_at: '2026-07-04'
+    data_mode: snapshot

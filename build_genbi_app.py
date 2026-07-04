@@ -1,0 +1,426 @@
+import os
+import shutil
+
+# 1. Create directories
+app_dir = 'wren_project/apps/my_bi_app'
+data_dir = os.path.join(app_dir, 'data')
+os.makedirs(data_dir, exist_ok=True)
+
+# 2. Copy DuckDB database
+shutil.copy('04_clean_data/analytics_production.duckdb', os.path.join(data_dir, 'analytics_production.duckdb'))
+
+# 3. Copy MDL JSON manifest
+shutil.copy('wren_project/target/mdl.json', os.path.join(app_dir, 'mdl.json'))
+
+# 4. Generate index.html
+html_content = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WrenAI Serverless GenBI App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f111a;
+            --card-bg: rgba(22, 28, 45, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --primary: #4f46e5;
+            --accent: #10b981;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card-badge {
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 8px;
+            border-radius: 8px;
+            color: var(--text-muted);
+        }
+
+        .metric {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 12px 0;
+            color: #fff;
+        }
+
+        .playground {
+            grid-column: 1 / -1;
+            background: rgba(17, 24, 39, 0.8);
+        }
+
+        .console {
+            background: #090a10;
+            border-radius: 12px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            margin-top: 16px;
+            color: #34d399;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        select, input, button {
+            background: #1a1e2e;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+        }
+
+        button:hover {
+            background: #4338ca;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>
+            <h1>WrenAI GenBI Sandbox</h1>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">Serverless execution powered by wren-core-wasm</div>
+        </div>
+        <div class="status" id="engine-status">
+            <span class="loader"></span> Loading WrenEngine WASM...
+        </div>
+    </header>
+
+    <div class="grid">
+        <!-- Card 1: AI Markets Shop -->
+        <div class="card">
+            <div class="card-header">
+                <h2>AI Markets Shop</h2>
+                <span class="card-badge">Shopify + Forex</span>
+            </div>
+            <div class="metric" id="metric-sales">--</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="submetric-sales">Total Orders processed</div>
+        </div>
+
+        <!-- Card 2: GTrend Screener -->
+        <div class="card">
+            <div class="card-header">
+                <h2>GTrend Screener</h2>
+                <span class="card-badge">Binance + Sentiments</span>
+            </div>
+            <div class="metric" id="metric-crypto">--</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="submetric-crypto">Latest BTC Price Index</div>
+        </div>
+
+        <!-- Card 3: Agentic Prompt Labs -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Agentic Prompt Labs</h2>
+                <span class="card-badge">GitHub + SEO</span>
+            </div>
+            <div class="metric" id="metric-prompt">--</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="submetric-prompt">Tracked telemetry keywords</div>
+        </div>
+
+        <!-- Card 4: Terrazas Venue -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Terrazas Venue</h2>
+                <span class="card-badge">Bookings + Weather</span>
+            </div>
+            <div class="metric" id="metric-terrazas">--</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted);" id="submetric-terrazas">Total gross bookings revenue</div>
+        </div>
+
+        <!-- Semantic Playground -->
+        <div class="card playground">
+            <h2>WrenAI Semantic Query Playground</h2>
+            <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+                Execute governed SQL queries against the local DuckDB manifest directly in your browser.
+            </div>
+            
+            <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 250px;">
+                    <label style="font-size: 0.85rem; color: var(--text-muted);">Predefined Queries:</label>
+                    <select id="query-select">
+                        <option value="SELECT count(*) FROM fact_shop_orders">Get Shopify Total Orders Count</option>
+                        <option value="SELECT device_type, sum(total_price) as sales FROM fact_shop_orders GROUP BY device_type">Sales Volume by Device Type</option>
+                        <option value="SELECT symbol, last_price, volume FROM fact_binance_klines LIMIT 5">Get Latest Binance Klines Data</option>
+                        <option value="SELECT count(*) FROM ext_hackernews_tech">HN Ingested Stories Count</option>
+                    </select>
+                </div>
+                <div style="flex: 2; min-width: 300px;">
+                    <label style="font-size: 0.85rem; color: var(--text-muted);">Custom SQL Query:</label>
+                    <input type="text" id="query-input" value="SELECT count(*) FROM fact_shop_orders">
+                </div>
+            </div>
+            
+            <button id="run-btn" style="margin-top: 16px;">Run Query via Semantic Layer</button>
+
+            <div style="margin-top: 24px;">
+                <label style="font-size: 0.85rem; color: var(--text-muted);">WrenAI Transpiled SQL Query Plan:</label>
+                <div class="console" id="sql-plan">-- Waiting for run --</div>
+            </div>
+
+            <div style="margin-top: 24px;">
+                <label style="font-size: 0.85rem; color: var(--text-muted);">Results Output:</label>
+                <div id="results-table" style="overflow-x: auto;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { WrenEngine } from "https://unpkg.com/@wrenai/wren-core-wasm@0.4.1/dist/index.js";
+        
+        let engine;
+        const statusEl = document.getElementById('engine-status');
+        const runBtn = document.getElementById('run-btn');
+        const querySelect = document.getElementById('query-select');
+        const queryInput = document.getElementById('query-input');
+        const planEl = document.getElementById('sql-plan');
+        const resultsEl = document.getElementById('results-table');
+
+        async function initWren() {
+            try {
+                // Initialize the wasm engine
+                engine = await WrenEngine.init();
+                
+                // Fetch MDL json
+                const mdlRes = await fetch('mdl.json');
+                const mdl = await mdlRes.json();
+                
+                // Load database profile pointing to local relative DuckDB file
+                const profile = { source: "data/analytics_production.duckdb" };
+                
+                await engine.loadMDL(mdl, profile);
+                
+                statusEl.innerHTML = "✓ WrenEngine WASM Ready";
+                statusEl.style.background = "rgba(16, 185, 129, 0.1)";
+                statusEl.style.borderColor = "var(--accent)";
+                statusEl.style.color = "var(--accent)";
+                
+                // Load operational KPI metrics
+                loadKPIs();
+            } catch (err) {
+                console.error(err);
+                statusEl.innerHTML = "⚠ Load Failed: " + err.message;
+                statusEl.style.background = "rgba(239, 68, 68, 0.1)";
+                statusEl.style.borderColor = "rgba(239, 68, 68, 0.2)";
+                statusEl.style.color = "#ef4444";
+            }
+        }
+
+        async function loadKPIs() {
+            try {
+                // 1. Shopify orders count
+                const shopRes = await engine.query("SELECT count(*) as total FROM fact_shop_orders");
+                if (shopRes && shopRes.length > 0) {
+                    document.getElementById('metric-sales').innerText = shopRes[0].total + " Orders";
+                }
+                
+                // 2. Binance BTC price
+                const btcRes = await engine.query("SELECT last_price FROM fact_binance_klines ORDER BY open_time DESC LIMIT 1");
+                if (btcRes && btcRes.length > 0) {
+                    document.getElementById('metric-crypto').innerText = "$" + parseFloat(btcRes[0].last_price).toLocaleString();
+                }
+                
+                // 3. Prompt telemetry difficulty keywords count
+                const promptRes = await engine.query("SELECT count(distinct keyword_tracked) as kws FROM staging_prompt_telemetry");
+                if (promptRes && promptRes.length > 0) {
+                    document.getElementById('metric-prompt').innerText = promptRes[0].kws + " Keywords";
+                }
+                
+                // 4. Terrazas venue gross amount
+                const venueRes = await engine.query("SELECT sum(total_gross_amount) as total_rev FROM staging_terrazas_bookings");
+                if (venueRes && venueRes.length > 0) {
+                    document.getElementById('metric-terrazas').innerText = "$" + parseFloat(venueRes[0].total_rev).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+            } catch (err) {
+                console.error("Error loading KPI widgets:", err);
+            }
+        }
+
+        querySelect.addEventListener('change', () => {
+            queryInput.value = querySelect.value;
+        });
+
+        runBtn.addEventListener('click', async () => {
+            if (!engine) return;
+            const sql = queryInput.value;
+            planEl.innerText = "Transpiling and building dry-plan AST...";
+            resultsEl.innerHTML = '<span class="loader"></span> Query executing client-side...';
+            
+            try {
+                // 1. Dry plan (transpiled governed SQL)
+                const plan = await engine.dryPlan(sql);
+                planEl.innerText = plan;
+                
+                // 2. Execute query
+                const rows = await engine.query(sql);
+                renderTable(rows);
+            } catch (err) {
+                planEl.innerText = "Error during transpilation: " + err.message;
+                resultsEl.innerHTML = '<div style="color: #ef4444;">Query failed: ' + err.message + '</div>';
+            }
+        });
+
+        function renderTable(rows) {
+            if (!rows || rows.length === 0) {
+                resultsEl.innerHTML = "No results returned.";
+                return;
+            }
+            
+            const columns = Object.keys(rows[0]);
+            let html = "<table><thead><tr>";
+            columns.forEach(col => {
+                html += `<th>${col}</th>`;
+            });
+            html += "</tr></thead><tbody>";
+            
+            rows.forEach(row => {
+                html += "<tr>";
+                columns.forEach(col => {
+                    let val = row[col];
+                    if (typeof val === 'number') {
+                        val = val.toLocaleString(undefined, {maximumFractionDigits: 4});
+                    }
+                    html += `<td>${val}</td>`;
+                });
+                html += "</tr>";
+            });
+            html += "</tbody></table>";
+            resultsEl.innerHTML = html;
+        }
+
+        initWren();
+    </script>
+</body>
+</html>
+'''
+
+with open(os.path.join(app_dir, 'index.html'), 'w', encoding='utf-8') as f:
+    f.write(html_content)
+
+print("Self-contained GenBI app index.html generated successfully.")
