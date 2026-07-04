@@ -1,7 +1,7 @@
 -- 03_etl_pipelines/merge_unified_warehouse.sql
 
 -- Master Unification Script for the Enterprise Data Warehouse
--- This ingests all 16 raw context sources for the 4 tenants into DuckDB.
+-- Ingests all raw context sources + Google Trends data into DuckDB.
 
 -- ==============================================================
 -- TENANT A: AI MARKETS SHOP
@@ -24,6 +24,9 @@ SELECT * FROM read_csv_auto('02_raw_data/shop_buyer_geo_raw.csv');
 CREATE OR REPLACE TABLE ext_shop_wikipedia AS 
 SELECT * FROM read_csv_auto('02_raw_data/shop_wikipedia_trends_raw.csv');
 
+CREATE OR REPLACE TABLE ext_shop_google_trends AS
+SELECT * FROM read_csv_auto('02_raw_data/google_trends_shop.csv');
+
 
 -- ==============================================================
 -- TENANT B: GTREND SCREENER
@@ -39,6 +42,9 @@ SELECT * FROM read_csv_auto('02_raw_data/crypto_sentiment_raw.csv');
 
 CREATE OR REPLACE TABLE ext_blockchain_network AS 
 SELECT * FROM read_csv_auto('02_raw_data/blockchain_network_raw.csv');
+
+CREATE OR REPLACE TABLE ext_gtrend_google_trends AS
+SELECT * FROM read_csv_auto('02_raw_data/google_trends_gtrend.csv');
 
 
 -- ==============================================================
@@ -56,6 +62,9 @@ SELECT * FROM read_csv_auto('02_raw_data/hackernews_tech_raw.csv');
 CREATE OR REPLACE TABLE ext_arxiv_trends AS 
 SELECT * FROM read_csv_auto('02_raw_data/arxiv_academic_trends_raw.csv');
 
+CREATE OR REPLACE TABLE ext_prompt_google_trends AS
+SELECT * FROM read_csv_auto('02_raw_data/google_trends_prompt.csv');
+
 
 -- ==============================================================
 -- TENANT D: TERRAZAS VENUE ADMINISTRATION
@@ -71,5 +80,8 @@ SELECT * FROM read_csv_auto('02_raw_data/mexico_holidays_raw.csv');
 
 CREATE OR REPLACE TABLE ext_osm_venue_density AS 
 SELECT * FROM read_csv_auto('02_raw_data/osm_venue_density_raw.csv');
+
+CREATE OR REPLACE TABLE ext_terrazas_google_trends AS
+SELECT * FROM read_csv_auto('02_raw_data/google_trends_terrazas.csv');
 
 -- End of Merge Script
