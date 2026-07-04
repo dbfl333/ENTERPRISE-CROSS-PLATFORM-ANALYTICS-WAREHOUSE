@@ -112,7 +112,7 @@ with c1:
         y=alt.Y("conv_rate:Q", title="Conversion Rate (%)"),
         color=alt.Color("device_type:N", scale=alt.Scale(scheme="purples"), legend=None),
         tooltip=["device_type", "total_checkouts", "completions", "conv_rate"]
-    ).properties(height=300)
+    ).properties(height=250)
     st.altair_chart(device_chart, use_container_width=True)
 
 with c2:
@@ -123,7 +123,7 @@ with c2:
             theta=alt.Theta("count:Q"),
             color=alt.Color("cancel_reason:N", scale=alt.Scale(scheme="inferno")),
             tooltip=["cancel_reason", "count"]
-        ).properties(height=300)
+        ).properties(height=250)
         st.altair_chart(cancel_chart, use_container_width=True)
 
 st.write("---")
@@ -137,7 +137,7 @@ with c3:
         x=alt.X('rev:Q', title='Revenue ($)'),
         color=alt.Color('orders:Q', scale=alt.Scale(scheme='bluegreen')),
         tooltip=['country', 'rev', 'orders']
-    ).properties(height=300)
+    ).properties(height=250)
     st.altair_chart(geo_chart, use_container_width=True)
 
 with c4:
@@ -150,7 +150,7 @@ with c4:
         y=alt.Y('avg_time:Q', title='Seconds to Convert'),
         color=alt.Color('device_type:N', scale=alt.Scale(scheme='teals'), legend=None),
         tooltip=['device_type', 'avg_time']
-    ).properties(height=300)
+    ).properties(height=250)
     st.altair_chart(time_chart, use_container_width=True)
 
 st.write("---")

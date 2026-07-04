@@ -101,7 +101,7 @@ with c1:
     close_line = base.mark_line(color="#FFD700", strokeWidth=3).encode(y=alt.Y("close_price:Q", title="Price ($)", scale=alt.Scale(zero=False)))
     sma20_line = base.mark_line(color="#00E5FF", strokeDash=[4, 4]).encode(y=alt.Y("sma_20:Q"))
     sma50_line = base.mark_line(color="#FF4500", strokeDash=[2, 2]).encode(y=alt.Y("sma_50:Q"))
-    st.altair_chart(alt.layer(close_line, sma20_line, sma50_line).properties(height=350), use_container_width=True)
+    st.altair_chart(alt.layer(close_line, sma20_line, sma50_line).properties(height=250), use_container_width=True)
 
 with c2:
     st.markdown("<div class='chart-container'><h3>🔥 RSI Oscillation Engine</h3></div>", unsafe_allow_html=True)
@@ -109,7 +109,7 @@ with c2:
         x=alt.X("date_str:N", title="Date"),
         y=alt.Y("rsi_14:Q", title="RSI", scale=alt.Scale(domain=[0, 100])),
         tooltip=["date_str", "rsi_14"]
-    ).properties(height=350)
+    ).properties(height=250)
     st.altair_chart(rsi_chart, use_container_width=True)
 
 st.write("---")
@@ -125,7 +125,7 @@ with c3:
             x=alt.X("date_str:N", title="Date"),
             y=alt.Y("hr:Q", title="Hash Rate"),
             tooltip=["date_str", "hr"]
-        ).properties(height=300)
+        ).properties(height=250)
         st.altair_chart(hr_chart, use_container_width=True)
 
 with c4:
@@ -136,7 +136,7 @@ with c4:
             theta=alt.Theta("weight:Q"),
             color=alt.Color("name:N", scale=alt.Scale(scheme="category10")),
             tooltip=["name", "symbol"]
-        ).properties(height=300)
+        ).properties(height=250)
         st.altair_chart(trending_chart, use_container_width=True)
 
 st.write("---")

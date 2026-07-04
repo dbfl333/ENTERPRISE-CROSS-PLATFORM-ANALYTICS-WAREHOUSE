@@ -190,3 +190,5 @@ The following are excluded from Git tracking by `.gitignore`:
 | Terrazas-home | Event venue management and reservation engine |
 
 All active telemetry and system logging streams produced by those codebases are directly piped into this centralized ENTERPRISE-CROSS-PLATFORM-ANALYTICS-WAREHOUSE engine.
+C R I T I C A L   S Y S T E M   R U L E :   W e   a r e   o p e r a t i n g   w i t h i n   a   L I V E   p r o d u c t i o n   b u s i n e s s   a p p l i c a t i o n   t h a t   d i s p l a y s   r e a l   d a t a   f r o m   o u r   d a t a   w a r e h o u s e   t a b l e s .   D O   N O T   u s e   s y n t h e t i c   g e n e r a t o r s   o r   f a k e   d a t a .  
+ 

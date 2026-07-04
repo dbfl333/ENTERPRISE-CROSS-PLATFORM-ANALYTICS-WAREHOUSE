@@ -105,7 +105,7 @@ with c1:
         y=alt.Y("search_interest_score:Q", title="Interest Score (0-100)"),
         color=alt.Color("keyword:N", title="Keyword", scale=alt.Scale(scheme="set1")),
         tooltip=["date_str", "keyword", "search_interest_score"]
-    ).properties(height=350)
+    ).properties(height=250)
     st.altair_chart(chart, use_container_width=True)
 
 with c2:
@@ -116,7 +116,7 @@ with c2:
             theta=alt.Theta("stars:Q"),
             color=alt.Color("name:N", scale=alt.Scale(scheme="dark2")),
             tooltip=["name", "stars"]
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(git_chart, use_container_width=True)
 
 st.write("---")
@@ -131,7 +131,7 @@ with c3:
             color=alt.Color('keyword:N', scale=alt.Scale(scheme='spectral')),
             size=alt.Size('avg_interest:Q', title='Search Interest', scale=alt.Scale(range=[100, 1000])),
             tooltip=['keyword', 'avg_difficulty', 'avg_cpc_high', 'avg_interest']
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(scatter, use_container_width=True)
 
 with c4:
@@ -145,7 +145,7 @@ with c4:
             y=alt.Y('momentum:Q', title='Weekly Momentum (%)'),
             color=alt.Color('competition:N', scale=alt.Scale(scheme='category20')),
             tooltip=['keyword', 'momentum', 'competition']
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(mom_chart, use_container_width=True)
 
 st.write("---")

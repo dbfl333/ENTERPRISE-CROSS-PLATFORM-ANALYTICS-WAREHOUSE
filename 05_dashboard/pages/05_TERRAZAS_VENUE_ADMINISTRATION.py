@@ -114,7 +114,7 @@ with c1:
             x=alt.X('date_str:N', title='Date'),
             y=alt.Y('daily_revenue:Q', title='Daily Revenue ($)'),
             tooltip=['date_str', 'daily_revenue']
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(tl_chart, use_container_width=True)
 
 with c2:
@@ -125,7 +125,7 @@ with c2:
             theta=alt.Theta("revenue:Q"),
             color=alt.Color("event_type:N", scale=alt.Scale(scheme="category20c")),
             tooltip=["event_type", "bookings", "revenue", "multiplier"]
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(evt_chart, use_container_width=True)
 
 st.write("---")
@@ -139,7 +139,7 @@ with c3:
             y=alt.Y('revenue:Q', title='Revenue Yield ($)'),
             color=alt.Color('event_type:N', scale=alt.Scale(scheme='turbo')),
             tooltip=['event_type', 'multiplier', 'revenue', 'bookings']
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(scatter, use_container_width=True)
 
 with c4:
@@ -151,7 +151,7 @@ with c4:
             y=alt.Y('avg_lead_time:Q', title='Average Lead Time (Days)'),
             color=alt.Color('event_type:N', scale=alt.Scale(scheme='set2'), legend=None),
             tooltip=['event_type', 'avg_lead_time', 'max_lead', 'min_lead']
-        ).properties(height=350)
+        ).properties(height=250)
         st.altair_chart(ld_chart, use_container_width=True)
 
 st.write("---")
