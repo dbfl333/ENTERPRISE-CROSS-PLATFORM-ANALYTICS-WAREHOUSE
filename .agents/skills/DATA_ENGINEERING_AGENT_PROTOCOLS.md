@@ -9,10 +9,10 @@ You are an autonomous Senior Data Engineer and Analytics Architect operating on 
 
 ## 2. OFFICIAL DOCUMENTATION SOURCES (REQUIRED READING)
 When generating SQL transformations or encountering syntax edge-cases, you must refer to the official documentation structures. DuckDB heavily relies on PostgreSQL standard functions.
-*   **DuckDB SQL Core Functions:** [https://duckdb.org/docs/sql/functions/overview](https://duckdb.org/docs/sql/functions/overview)
-*   **DuckDB Window Functions:** [https://duckdb.org/docs/sql/functions/window_functions](https://duckdb.org/docs/sql/functions/window_functions)
-*   **DuckDB CLI & Python API:** [https://duckdb.org/docs/api/python/overview](https://duckdb.org/docs/api/python/overview)
-*   **PostgreSQL String Operators (Supported by DuckDB):** [https://www.postgresql.org/docs/current/functions-string.html](https://www.postgresql.org/docs/current/functions-string.html)
+*   **DuckDB SQL Core Functions:** https://duckdb.org/docs/sql/functions/overview
+*   **DuckDB Window Functions:** https://duckdb.org/docs/sql/functions/window_functions
+*   **DuckDB CLI & Python API:** https://duckdb.org/docs/api/python/overview
+*   **PostgreSQL String Operators:** https://www.postgresql.org/docs/current/functions-string.html
 
 ---
 
@@ -46,9 +46,11 @@ pip freeze > requirements.txt
 ---
 
 ## 4. PYTHON INGESTION & SYNTHESIS (EXACT CODE PROTOCOLS)
-When writing Python to generate or ingest data (e.g., using the Faker library), you must follow strict production patterns. Do not write generic scripts.
+
+When writing Python to generate or ingest data (e.g., using the `Faker` library), you must follow strict production patterns. Do not write generic scripts.
 
 ### Step 4.1: Injecting "Realistic Messy Data"
+
 When generating synthetic data for portfolio demonstrations, explicitly inject errors to prove your ETL cleaning skills.
 
 ```python
@@ -79,10 +81,12 @@ logging.info("Data generation complete. Exporting to /02_raw_data/")
 ---
 
 ## 5. DUCKDB / POSTGRESQL ETL MASTERY (EXACT SQL SYNTAX)
+
 You must write SQL using enterprise standards. DuckDB reads directly from CSV/Parquet files and processes data locally.
 
 ### Rule 5.1: Handling Nulls & Type Casting
-Never leave dirty data. Cast columns explicitly and handle nulls using COALESCE.
+
+Never leave dirty data. Cast columns explicitly and handle nulls using `COALESCE`.
 
 ```sql
 -- EXACT INPUT TO CLEAN MESSY DATA FROM A CSV
@@ -98,6 +102,7 @@ WHERE user_id IS NOT NULL;
 ```
 
 ### Rule 5.2: String Manipulation (PostgreSQL Syntax)
+
 Always standardize text formats.
 
 ```sql
@@ -109,6 +114,7 @@ FROM raw_users;
 ```
 
 ### Rule 5.3: Window Functions for Time-Series Analysis
+
 Do not use slow self-joins. Use Window Functions to calculate running totals, moving averages, and deduplication.
 
 ```sql
@@ -131,7 +137,8 @@ WHERE rn = 1; -- Drops all duplicate rows
 ```
 
 ### Rule 5.4: Common Table Expressions (CTEs)
-Never write deeply nested subqueries. Break logic down step-by-step using WITH.
+
+Never write deeply nested subqueries. Break logic down step-by-step using `WITH`.
 
 ```sql
 -- EXACT INPUT FOR MODULAR QUERY DESIGN
@@ -159,10 +166,11 @@ FROM PriorMonthRevenue;
 ---
 
 ## 6. DATA WAREHOUSE ARCHITECTURE (STAR SCHEMA)
+
 When merging the final datasets into `analytics_production.duckdb`, structure them into a Star Schema.
 
-- **Fact Tables:** Contain measurable, quantitative data (e.g., `fact_transactions`, `fact_api_logs`).
-- **Dimension Tables:** Contain descriptive attributes (e.g., `dim_users`, `dim_dates`, `dim_assets`).
+* **Fact Tables:** Contain measurable, quantitative data (e.g., `fact_transactions`, `fact_api_logs`).
+* **Dimension Tables:** Contain descriptive attributes (e.g., `dim_users`, `dim_dates`, `dim_assets`).
 
 ```sql
 -- EXACT INPUT TO CREATE THE FINAL REPORTING VIEW
@@ -180,10 +188,11 @@ JOIN dim_time t ON f.transaction_date = t.full_date;
 ---
 
 ## 7. DASHBOARDING DEPLOYMENT PROTOCOLS (STREAMLIT)
+
 When connecting the `05_dashboard/app.py` to the clean database, optimize for speed.
 
-- **Do not load the whole database:** Push the computation to DuckDB via SQL; only load the small aggregated result set into Pandas/Streamlit.
-- **Use Caching:** Use `@st.cache_data` on all DuckDB queries.
+* **Do not load the whole database:** Push the computation to DuckDB via SQL; only load the small aggregated result set into Pandas/Streamlit.
+* **Use Caching:** Use `@st.cache_data` on all DuckDB queries.
 
 ```python
 # EXACT INPUT FOR STREAMLIT DUCKDB CONNECTION
@@ -210,3 +219,14 @@ st.title("Enterprise Metrics Hub")
 data = load_executive_metrics()
 st.line_chart(data.set_index('txn_month'))
 ```
+
+---
+
+## 8. EXTERNAL REPOSITORIES & SOURCE DATA (LUKE BAROUSSE)
+
+To construct projects matching the architectural standards outlined in the foundational bootcamp, you are instructed to reference the official course repository.
+
+**Master Data Engineering Repository:**
+
+* **URL:** https://github.com/lukebarousse/SQL_Data_Engineering_Course
+* **Agent Instruction:** If the user requests standard templates, data configurations, or shell scripts referenced in the bootcamp, navigate to this GitHub URL, analyze the codebase, and extract the necessary logic to apply to the current project.
