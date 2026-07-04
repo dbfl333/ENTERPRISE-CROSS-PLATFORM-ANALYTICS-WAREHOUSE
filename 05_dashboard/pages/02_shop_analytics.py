@@ -63,6 +63,18 @@ def load_cancellations():
 
 
 @st.cache_data
+def load_wiki_views_trend():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("""
+        SELECT DISTINCT created_at::DATE as date, wiki_views
+        FROM fact_shop_orders
+        ORDER BY date ASC
+    """).df()
+    conn.close()
+    return df
+
+
+@st.cache_data
 def load_funnel_ledger():
     conn = duckdb.connect(DB_PATH, read_only=True)
     df = conn.execute("""
@@ -71,7 +83,7 @@ def load_funnel_ledger():
             abandoned_checkout_url, created_at, completed_at, time_in_funnel_seconds,
             currency, subtotal_price, total_discounts, total_tax, total_amount as total_price,
             financial_status, cart_token, device_type, browser_ip,
-            buyer_accepts_marketing, cancel_reason
+            buyer_accepts_marketing, cancel_reason, geo_country, geo_city, rate_MXN
         FROM fact_shop_orders
         ORDER BY created_at DESC
     """).df()
@@ -83,6 +95,7 @@ stats = load_shop_stats()
 total_checkouts, conversions, rev, avg_time, discounts, opt_in = stats
 conv_rate = (conversions / total_checkouts * 100.0) if total_checkouts > 0 else 0.0
 
+# ==================== TIER 1: VISUAL METRIC OPERATIONS ====================
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Total Checkout Sessions", f"{total_checkouts:,}")
 col2.metric("Completed Conversions", f"{conversions:,}")
@@ -91,7 +104,6 @@ col4.metric("Gross Revenue", f"${rev:,.2f}")
 
 st.write("---")
 
-st.subheader("📊 In-Depth Funnel Insights")
 c_col1, c_col2, c_col3 = st.columns(3)
 c_col1.metric("Avg Conversion Time", f"{int(avg_time)} seconds")
 c_col2.metric("Total Discounts Distributed", f"${discounts:,.2f}")
@@ -109,7 +121,7 @@ with c1:
         y=alt.Y("conv_rate:Q", title="Conversion Rate (%)"),
         color=alt.Color("device_type:N", scale=alt.Scale(scheme="accent")),
         tooltip=["device_type", "total_checkouts", "completions", "conv_rate"]
-    ).properties(height=300)
+    ).properties(height=280)
     st.altair_chart(device_chart, use_container_width=True)
 
 with c2:
@@ -119,11 +131,42 @@ with c2:
         theta=alt.Theta("count:Q"),
         color=alt.Color("cancel_reason:N", scale=alt.Scale(scheme="tableau10")),
         tooltip=["cancel_reason", "count"]
-    ).properties(height=300)
+    ).properties(height=280)
     st.altair_chart(cancel_chart, use_container_width=True)
 
 st.write("---")
 
+st.subheader("📈 Global Interest Trend (Wikipedia 'Algorithmic Trading' Pageviews)")
+wiki_df = load_wiki_views_trend()
+wiki_df['date_str'] = pd.to_datetime(wiki_df['date']).dt.strftime('%Y-%m-%d')
+wiki_chart = alt.Chart(wiki_df).mark_line(color="#FF4500", strokeWidth=2).encode(
+    x=alt.X("date_str:N", title="Timeline Date"),
+    y=alt.Y("wiki_views:Q", title="Pageviews"),
+    tooltip=["date_str", "wiki_views"]
+).properties(height=250)
+st.altair_chart(wiki_chart, use_container_width=True)
+
+st.write("---")
+
 st.subheader("Live Ingested Shopify Funnel Ledger")
-st.markdown("Raw 20-point conversion log dataset used to train ML funnel drop models:")
 st.dataframe(load_funnel_ledger(), use_container_width=True)
+
+st.write("---")
+
+# ==================== TIER 2: ACTIONABLE MONETIZATION STRATEGY ====================
+st.subheader("Monetization Insights & Ad Copy Generation")
+
+# Logic to calculate top cancellation reason
+top_cancel = cancel_df.iloc[0]['cancel_reason'] if not cancel_df.empty else "price_resistance"
+
+# Find top device category
+top_device = device_df.sort_values(by="total_checkouts", ascending=False).iloc[0]['device_type'] if not device_df.empty else "mobile"
+
+st.markdown(f"""
+> **Target Audience Profile:** Users executing checkouts primarily on **{top_device}** devices, concentrated in locales matching the store configuration (USD/MXN/EUR/GBP).
+> **Identified Market Vulnerability:** High cart drop-off triggered by **{top_cancel.replace('_', ' ')}**. This signifies a critical point of friction where buyers hesitate at checkout, requiring targeted discount codes or simplified steps.
+
+#### Recommended Ad Copy Hooks:
+1. **Hook 1 (Emotional Angle):** "Don't let checkout friction hold you back. Complete your setup in under 60 seconds and start trading like a pro today."
+2. **Hook 2 (Data-Driven Angle):** "Unlock quantitative-grade indicators with a special discount code. Join the growing group of algorithmic traders automating their charts on mobile."
+""")

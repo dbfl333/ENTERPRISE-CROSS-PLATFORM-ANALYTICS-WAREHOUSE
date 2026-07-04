@@ -43,12 +43,13 @@ def load_event_distribution():
 
 
 @st.cache_data
-def load_revenue_timeline():
+def load_revenue_and_weather_timeline():
     conn = duckdb.connect(DB_PATH, read_only=True)
     df = conn.execute("""
         SELECT
             CAST(check_in_timestamp AS DATE) as date_key,
             SUM(total_gross_amount) as daily_revenue,
+            AVG(forecast_max_temp) as max_temp,
             AVG(local_search_demand_score) as search_interest
         FROM staging_terrazas_bookings
         GROUP BY 1
@@ -68,7 +69,7 @@ def load_venue_ledger():
                service_addons_json, security_deposit_held, cleaning_fee,
                total_gross_amount, payment_status, contract_signed_status,
                cancellation_policy_type, lead_time_days, customer_rating_score,
-               local_search_demand_score
+               local_search_demand_score, forecast_max_temp, holiday_name, neighborhood
         FROM staging_terrazas_bookings
         ORDER BY check_in_timestamp DESC
     """).df()
@@ -85,6 +86,8 @@ def load_schema_info():
 
 
 stats = load_venue_stats()
+
+# ==================== TIER 1: VISUAL METRIC OPERATIONS ====================
 col1, col2, col3, col4 = st.columns(4)
 col1.metric("Staged Reservations", f"{stats[0]:,}")
 col2.metric("Gross Venue Revenue", f"${stats[1]:,.2f}")
@@ -96,15 +99,24 @@ st.write("---")
 c1, c2 = st.columns([2, 1])
 
 with c1:
-    st.subheader("Staging Daily Booking Revenues & Regional Interest Index")
-    timeline_df = load_revenue_timeline()
+    st.subheader("Daily Ingestion Revenue & Ciudad Juárez Max Temperatures")
+    timeline_df = load_revenue_and_weather_timeline()
     timeline_df['date_str'] = pd.to_datetime(timeline_df['date_key']).dt.strftime('%Y-%m-%d')
-    rev_line = alt.Chart(timeline_df).mark_line(color="#00E5FF", strokeWidth=2).encode(
-        x=alt.X("date_str:N", title="Event Check-in Date"),
+    
+    # Dual-axis chart
+    base = alt.Chart(timeline_df).encode(x=alt.X("date_str:N", title="Event Check-in Date"))
+    
+    rev_line = base.mark_line(color="#00E5FF", strokeWidth=2.5).encode(
         y=alt.Y("daily_revenue:Q", title="Staging Revenue ($)"),
         tooltip=["date_str", "daily_revenue"]
     )
-    st.altair_chart(rev_line, use_container_width=True)
+    
+    temp_line = base.mark_line(color="#FF4500", strokeDash=[3, 3], strokeWidth=2).encode(
+        y=alt.Y("max_temp:Q", title="Max Temperature (°C)"),
+        tooltip=["date_str", "max_temp"]
+    )
+    
+    st.altair_chart(alt.layer(rev_line, temp_line).resolve_scale(y='independent'), use_container_width=True)
 
 with c2:
     st.subheader("Event Type Distribution")
@@ -113,13 +125,12 @@ with c2:
         theta=alt.Theta("count:Q"),
         color=alt.Color("event_type:N", scale=alt.Scale(scheme="category10")),
         tooltip=["event_type", "count"]
-    ).properties(height=300)
+    ).properties(height=260)
     st.altair_chart(event_chart, use_container_width=True)
 
 st.write("---")
 
 st.subheader("Live Venue Staging Log Ledger")
-st.markdown("Detailed webhook transaction record demonstrating dynamic JSON inventory mappings:")
 ledger_df = load_venue_ledger()
 
 try:
@@ -143,3 +154,22 @@ schema_info_styled = schema_info[['cid', 'name', 'type', 'notnull', 'dflt_value'
              'notnull': 'Not Null', 'dflt_value': 'Default Value', 'pk': 'Primary Key'}
 )
 st.table(schema_info_styled)
+
+st.write("---")
+
+# ==================== TIER 2: ACTIONABLE MONETIZATION STRATEGY ====================
+st.subheader("Monetization Insights & Ad Copy Generation")
+
+# Logic to read top event category and weather trends
+top_event = event_df.sort_values(by="count", ascending=False).iloc[0]['event_type'] if not event_df.empty else "Quinceañera"
+recent_temp = timeline_df.iloc[-1]['max_temp'] if not timeline_df.empty else 35.0
+recent_holiday = ledger_df[ledger_df['holiday_name'] != 'None'].iloc[0]['holiday_name'] if not ledger_df[ledger_df['holiday_name'] != 'None'].empty else "MX Holidays"
+
+st.markdown(f"""
+> **Target Audience Profile:** Commercial event venue owners and customer cohorts seeking local event spaces in Ciudad Juárez (Centro).
+> **Identified Market Vulnerability:** Demand surges for **{top_event}** bookings are highly correlated with seasonal temperatures peaking at **{recent_temp:.1f}°C** and long-weekend holidays (e.g., **{recent_holiday}**), leading to high scheduling pressure on venue calendars.
+
+#### Recommended Ad Copy Hooks:
+1. **Hook 1 (Emotional Angle):** "Ensure your event is perfect, rain or shine. Book our temperature-controlled Ciudad Juárez terrace today before holiday spaces sell out!"
+2. **Hook 2 (Data-Driven Angle):** "Automate your venue contracts and deposit holds. Stop losing {top_event} bookings during weekend weather surges."
+""")

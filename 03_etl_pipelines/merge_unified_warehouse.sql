@@ -5,28 +5,79 @@
 
 -- Agentic Prompt Labs Staging Schema (Tenant C)
 CREATE OR REPLACE TABLE staging_prompt_telemetry AS
+WITH Telemetry AS (
+    SELECT
+        CAST(trend_id AS VARCHAR) AS trend_id,
+        CAST(keyword_tracked AS VARCHAR) AS keyword_tracked,
+        CAST(search_date AS TIMESTAMP) AS search_date,
+        CAST(search_interest_score AS INTEGER) AS search_interest_score,
+        CAST(geo_region AS VARCHAR) AS geo_region,
+        CAST(platform_source AS VARCHAR) AS platform_source,
+        CAST(top_related_query_1 AS VARCHAR) AS top_related_query_1,
+        CAST(top_related_query_2 AS VARCHAR) AS top_related_query_2,
+        CAST(top_related_query_3 AS VARCHAR) AS top_related_query_3,
+        CAST(rising_query_1 AS VARCHAR) AS rising_query_1,
+        CAST(rising_query_2 AS VARCHAR) AS rising_query_2,
+        CAST(weekly_momentum_pct AS DOUBLE) AS weekly_momentum_pct,
+        CAST(monthly_momentum_pct AS DOUBLE) AS monthly_momentum_pct,
+        CAST(seasonality_index AS DOUBLE) AS seasonality_index,
+        CAST(competition_level AS VARCHAR) AS competition_level,
+        CAST(estimated_cpc_low AS DECIMAL(10,2)) AS estimated_cpc_low,
+        CAST(estimated_cpc_high AS DECIMAL(10,2)) AS estimated_cpc_high,
+        CAST(organic_difficulty AS INTEGER) AS organic_difficulty,
+        CAST(search_volume_tier AS VARCHAR) AS search_volume_tier,
+        CAST(profitable_niche_flag AS BOOLEAN) AS profitable_niche_flag
+    FROM read_csv_auto('02_raw_data/prompt_raw_telemetry.csv')
+),
+GitHub AS (
+    SELECT
+        CAST(name AS VARCHAR) AS top_github_repo,
+        CAST(stargazers_count AS INTEGER) AS top_github_stars
+    FROM read_csv_auto('02_raw_data/github_agent_demand_raw.csv')
+    ORDER BY stargazers_count DESC
+    LIMIT 1
+),
+ArXiv AS (
+    SELECT
+        CAST(title AS VARCHAR) AS latest_arxiv_title
+    FROM read_csv_auto('02_raw_data/arxiv_academic_trends_raw.csv')
+    LIMIT 1
+),
+HN AS (
+    SELECT
+        CAST(story_id AS VARCHAR) AS top_hn_story_id
+    FROM read_csv_auto('02_raw_data/hackernews_tech_raw.csv')
+    LIMIT 1
+)
 SELECT
-    CAST(trend_id AS VARCHAR) AS trend_id,
-    CAST(keyword_tracked AS VARCHAR) AS keyword_tracked,
-    CAST(search_date AS TIMESTAMP) AS search_date,
-    CAST(search_interest_score AS INTEGER) AS search_interest_score,
-    CAST(geo_region AS VARCHAR) AS geo_region,
-    CAST(platform_source AS VARCHAR) AS platform_source,
-    CAST(top_related_query_1 AS VARCHAR) AS top_related_query_1,
-    CAST(top_related_query_2 AS VARCHAR) AS top_related_query_2,
-    CAST(top_related_query_3 AS VARCHAR) AS top_related_query_3,
-    CAST(rising_query_1 AS VARCHAR) AS rising_query_1,
-    CAST(rising_query_2 AS VARCHAR) AS rising_query_2,
-    CAST(weekly_momentum_pct AS DOUBLE) AS weekly_momentum_pct,
-    CAST(monthly_momentum_pct AS DOUBLE) AS monthly_momentum_pct,
-    CAST(seasonality_index AS DOUBLE) AS seasonality_index,
-    CAST(competition_level AS VARCHAR) AS competition_level,
-    CAST(estimated_cpc_low AS DECIMAL(10,2)) AS estimated_cpc_low,
-    CAST(estimated_cpc_high AS DECIMAL(10,2)) AS estimated_cpc_high,
-    CAST(organic_difficulty AS INTEGER) AS organic_difficulty,
-    CAST(search_volume_tier AS VARCHAR) AS search_volume_tier,
-    CAST(profitable_niche_flag AS BOOLEAN) AS profitable_niche_flag
-FROM read_csv_auto('02_raw_data/prompt_telemetry_staging.csv');
+    t.trend_id,
+    t.keyword_tracked,
+    t.search_date,
+    t.search_interest_score,
+    t.geo_region,
+    t.platform_source,
+    t.top_related_query_1,
+    t.top_related_query_2,
+    t.top_related_query_3,
+    t.rising_query_1,
+    t.rising_query_2,
+    t.weekly_momentum_pct,
+    t.monthly_momentum_pct,
+    t.seasonality_index,
+    t.competition_level,
+    t.estimated_cpc_low,
+    t.estimated_cpc_high,
+    t.organic_difficulty,
+    t.search_volume_tier,
+    t.profitable_niche_flag,
+    COALESCE(g.top_github_repo, 'unknown') AS top_github_repo,
+    COALESCE(g.top_github_stars, 0) AS top_github_stars,
+    COALESCE(a.latest_arxiv_title, 'unknown') AS latest_arxiv_title,
+    COALESCE(h.top_hn_story_id, 'unknown') AS top_hn_story_id
+FROM Telemetry t
+CROSS JOIN GitHub g
+CROSS JOIN ArXiv a
+CROSS JOIN HN h;
 
 
 -- 2. Create Dimension Tables
@@ -99,7 +150,15 @@ SELECT
     device_type,
     browser_ip,
     buyer_accepts_marketing,
-    cancel_reason
+    cancel_reason,
+    rate_EUR,
+    rate_GBP,
+    rate_MXN,
+    geo_country,
+    geo_city,
+    geo_latitude,
+    geo_longitude,
+    wiki_views
 FROM clean_shop_orders;
 
 -- Fact Binance Klines (Tenant B)
@@ -124,62 +183,17 @@ SELECT
     sma_50,
     daily_change_percent,
     volatility_index,
+    fng_value,
+    fng_classification,
+    trending_coin_name,
+    trending_coin_symbol,
+    btc_hash_rate,
+    btc_market_price_usd,
     timestamp_fetched,
     screener_good_pair_flag
 FROM clean_binance_btc;
 
 
--- 4. Create GA4 Traffic & Session Staging Table (Tenant A — Google Analytics)
-CREATE OR REPLACE TABLE staging_ga4_sessions AS
-SELECT
-    CAST(ROW_NUMBER() OVER () AS VARCHAR) AS record_id,
-    CAST(session_date AS VARCHAR) AS session_date,
-    CAST(session_source AS VARCHAR) AS session_source,
-    CAST(session_medium AS VARCHAR) AS session_medium,
-    CAST(campaign_name AS VARCHAR) AS campaign_name,
-    CAST(landing_page AS VARCHAR) AS landing_page,
-    CAST(country AS VARCHAR) AS country,
-    CAST(device_category AS VARCHAR) AS device_category,
-    CAST(operating_system AS VARCHAR) AS operating_system,
-    CAST(browser AS VARCHAR) AS browser,
-    CAST(sessions AS INTEGER) AS sessions,
-    CAST(new_users AS INTEGER) AS new_users,
-    CAST(bounce_rate AS DOUBLE) AS bounce_rate,
-    CAST(avg_session_duration_sec AS DOUBLE) AS avg_session_duration_sec,
-    CAST(page_views AS INTEGER) AS page_views,
-    CAST(conversions AS INTEGER) AS conversions,
-    CAST(total_revenue AS DECIMAL(10,2)) AS total_revenue,
-    CAST(data_source AS VARCHAR) AS data_source,
-    CAST(extraction_date AS VARCHAR) AS extraction_date
-FROM read_csv_auto('02_raw_data/ga4_sessions.csv');
-
-
--- 5. Create Shopify Marketing Events Staging Table (Tenant A — Marketing Attribution)
-CREATE OR REPLACE TABLE staging_shopify_marketing AS
-SELECT
-    CAST(event_id AS VARCHAR) AS event_id,
-    CAST(started_at AS VARCHAR) AS started_at,
-    CAST(ended_at AS VARCHAR) AS ended_at,
-    CAST(scheduled_to_end AS VARCHAR) AS scheduled_to_end,
-    CAST(budget AS DECIMAL(10,2)) AS budget,
-    CAST(currency AS VARCHAR) AS currency,
-    CAST(event_type AS VARCHAR) AS event_type,
-    CAST(source AS VARCHAR) AS source,
-    CAST(channel AS VARCHAR) AS channel,
-    CAST(utm_source AS VARCHAR) AS utm_source,
-    CAST(utm_medium AS VARCHAR) AS utm_medium,
-    CAST(utm_campaign AS VARCHAR) AS utm_campaign,
-    CAST(paid_budget_percent_used AS DOUBLE) AS paid_budget_percent_used,
-    CAST(impressions AS INTEGER) AS impressions,
-    CAST(clicks AS INTEGER) AS clicks,
-    CAST(click_through_rate AS DOUBLE) AS click_through_rate,
-    CAST(spend AS DECIMAL(10,2)) AS spend,
-    CAST(conversions_attributed AS INTEGER) AS conversions_attributed,
-    CAST(attributed_revenue AS DECIMAL(10,2)) AS attributed_revenue,
-    CAST(roas AS DOUBLE) AS roas
-FROM read_csv_auto('02_raw_data/shopify_marketing_events.csv');
-
-
--- 6. Cleanup Working Temporary Tables
+-- 4. Cleanup Working Temporary Tables
 DROP TABLE clean_shop_orders;
 DROP TABLE clean_binance_btc;

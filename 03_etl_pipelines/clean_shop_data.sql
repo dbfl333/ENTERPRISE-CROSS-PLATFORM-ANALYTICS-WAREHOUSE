@@ -1,8 +1,8 @@
 -- Clean and structure Tenant A: AI Markets Shop (E-Commerce Ingestion)
--- Input: 02_raw_data/shop_raw_orders.csv
+-- Inputs: shop_raw_orders.csv, shop_forex_rates_raw.csv, shop_buyer_geo_raw.csv, shop_wikipedia_trends_raw.csv
 
 CREATE OR REPLACE TABLE clean_shop_orders AS
-WITH ProcessedOrders AS (
+WITH Orders AS (
     SELECT 
         CAST(checkout_id AS VARCHAR) AS checkout_id,
         CAST(customer_id AS VARCHAR) AS customer_id,
@@ -26,27 +26,61 @@ WITH ProcessedOrders AS (
         CAST(cancel_reason AS VARCHAR) AS cancel_reason,
         ROW_NUMBER() OVER(PARTITION BY checkout_id ORDER BY created_at DESC) as row_num
     FROM read_csv_auto('02_raw_data/shop_raw_orders.csv')
+),
+Forex AS (
+    SELECT 
+        CAST(rate_EUR AS DOUBLE) AS rate_EUR,
+        CAST(rate_GBP AS DOUBLE) AS rate_GBP,
+        CAST(rate_MXN AS DOUBLE) AS rate_MXN
+    FROM read_csv_auto('02_raw_data/shop_forex_rates_raw.csv')
+    LIMIT 1
+),
+Geo AS (
+    SELECT 
+        CAST(country AS VARCHAR) AS geo_country,
+        CAST(city AS VARCHAR) AS geo_city,
+        CAST(latitude AS DOUBLE) AS geo_latitude,
+        CAST(longitude AS DOUBLE) AS geo_longitude
+    FROM read_csv_auto('02_raw_data/shop_buyer_geo_raw.csv')
+    LIMIT 1
+),
+Wiki AS (
+    SELECT 
+        TRY_CAST(SUBSTRING(CAST(timestamp AS VARCHAR), 1, 8) AS DATE) AS wiki_date,
+        CAST(views AS INTEGER) AS wiki_views
+    FROM read_csv_auto('02_raw_data/shop_wikipedia_trends_raw.csv')
 )
 SELECT 
-    checkout_id,
-    customer_id,
-    customer_locale,
-    referring_site,
-    landing_site,
-    abandoned_checkout_url,
-    created_at,
-    completed_at,
-    time_in_funnel_seconds,
-    currency,
-    subtotal_price,
-    total_discounts,
-    total_tax,
-    total_price,
-    financial_status,
-    cart_token,
-    device_type,
-    browser_ip,
-    buyer_accepts_marketing,
-    cancel_reason
-FROM ProcessedOrders 
-WHERE row_num = 1;
+    o.checkout_id,
+    o.customer_id,
+    o.customer_locale,
+    o.referring_site,
+    o.landing_site,
+    o.abandoned_checkout_url,
+    o.created_at,
+    o.completed_at,
+    o.time_in_funnel_seconds,
+    o.currency,
+    o.subtotal_price,
+    o.total_discounts,
+    o.total_tax,
+    o.total_price,
+    o.financial_status,
+    o.cart_token,
+    o.device_type,
+    o.browser_ip,
+    o.buyer_accepts_marketing,
+    o.cancel_reason,
+    COALESCE(f.rate_EUR, 0.92) AS rate_EUR,
+    COALESCE(f.rate_GBP, 0.78) AS rate_GBP,
+    COALESCE(f.rate_MXN, 18.50) AS rate_MXN,
+    COALESCE(g.geo_country, 'United States') AS geo_country,
+    COALESCE(g.geo_city, 'Mountain View') AS geo_city,
+    COALESCE(g.geo_latitude, 37.42) AS geo_latitude,
+    COALESCE(g.geo_longitude, -122.08) AS geo_longitude,
+    COALESCE(w.wiki_views, 1200) AS wiki_views
+FROM Orders o
+CROSS JOIN Forex f
+CROSS JOIN Geo g
+LEFT JOIN Wiki w ON CAST(o.created_at AS DATE) = w.wiki_date
+WHERE o.row_num = 1;

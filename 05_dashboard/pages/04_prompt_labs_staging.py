@@ -42,7 +42,10 @@ def load_keyword_stats():
             AVG(search_interest_score) as avg_interest,
             AVG(organic_difficulty) as avg_difficulty,
             AVG(estimated_cpc_high) as avg_cpc_high,
-            COUNT(CASE WHEN profitable_niche_flag THEN 1 END) as profitable_weeks
+            COUNT(CASE WHEN profitable_niche_flag THEN 1 END) as profitable_weeks,
+            MAX(top_github_repo) as top_repo,
+            MAX(top_github_stars) as top_stars,
+            MAX(latest_arxiv_title) as latest_arxiv
         FROM staging_prompt_telemetry
         GROUP BY 1
     """).df()
@@ -62,10 +65,19 @@ def load_trends_timeline():
     return df
 
 
+@st.cache_data
+def load_github_shares():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("SELECT DISTINCT top_github_repo as name, top_github_stars as stars FROM staging_prompt_telemetry").df()
+    conn.close()
+    return df
+
+
 row_count = load_row_count()
 schema_info = load_schema_info()
 kw_stats = load_keyword_stats()
 
+# ==================== TIER 1: VISUAL METRIC OPERATIONS ====================
 col1, col2, col3 = st.columns(3)
 col1.metric("Ingested Trend Records", f"{row_count:,}")
 col2.metric("Pipeline Deployment State", "Ingestion Active")
@@ -82,19 +94,38 @@ chart = alt.Chart(trends_df).mark_line(strokeWidth=2.5).encode(
     y=alt.Y("search_interest_score:Q", title="Interest Score (0-100)"),
     color=alt.Color("keyword:N", title="Keyword", scale=alt.Scale(scheme="set1")),
     tooltip=["date_str", "keyword", "search_interest_score"]
-).properties(height=350)
+).properties(height=280)
 st.altair_chart(chart, use_container_width=True)
 
 st.write("---")
 
-st.subheader("🔍 Keyword Market Performance Summary")
-st.dataframe(kw_stats.rename(columns={
-    'keyword': 'Keyword Tracked',
-    'avg_interest': 'Avg Interest (0-100)',
-    'avg_difficulty': 'Avg SEO Difficulty',
-    'avg_cpc_high': 'Avg Est. CPC High ($)',
-    'profitable_weeks': 'Profitable Weeks Flagged'
-}), use_container_width=True)
+c1, c2 = st.columns([1, 1])
+
+with c1:
+    st.subheader("GitHub Repository Star Allocation")
+    git_shares_df = load_github_shares()
+    if not git_shares_df.empty:
+        git_chart = alt.Chart(git_shares_df).mark_arc(innerRadius=40).encode(
+            theta=alt.Theta("stars:Q"),
+            color=alt.Color("name:N", scale=alt.Scale(scheme="tableau20")),
+            tooltip=["name", "stars"]
+        ).properties(height=260)
+        st.altair_chart(git_chart, use_container_width=True)
+    else:
+        st.info("No GitHub repository star data available.")
+
+with c2:
+    st.subheader("🔍 Keyword Market Performance Summary")
+    st.dataframe(kw_stats.rename(columns={
+        'keyword': 'Keyword',
+        'avg_interest': 'Avg Interest',
+        'avg_difficulty': 'Avg SEO Diff',
+        'avg_cpc_high': 'Avg CPC High ($)',
+        'profitable_weeks': 'Profitable Weeks',
+        'top_repo': 'Top Repo',
+        'top_stars': 'Stars',
+        'latest_arxiv': 'Latest ArXiv Research'
+    }), use_container_width=True)
 
 st.write("---")
 
@@ -107,15 +138,21 @@ st.table(schema_info_styled)
 
 st.write("---")
 
-st.subheader("🔍 Local Landing CSV Landing Zone")
-csv_path = "02_raw_data/prompt_telemetry_staging.csv"
-if os.path.exists(csv_path):
-    try:
-        csv_df = pd.read_csv(csv_path)
-        st.code(f"Path: {csv_path}\nFile Size: {os.path.getsize(csv_path)} bytes\nColumns detected: {list(csv_df.columns)}")
-        st.write("First 5 rows preview:")
-        st.dataframe(csv_df.head(5), use_container_width=True)
-    except Exception as e:
-        st.error(f"Error reading CSV header: {e}")
-else:
-    st.info(f"File '{csv_path}' not found locally — run the ETL pipeline to generate it.")
+# ==================== TIER 2: ACTIONABLE MONETIZATION STRATEGY ====================
+st.subheader("Monetization Insights & Ad Copy Generation")
+
+# Logic to calculate key indicators
+top_keyword_row = kw_stats.sort_values(by="avg_interest", ascending=False).iloc[0] if not kw_stats.empty else None
+top_kw = top_keyword_row['keyword'] if top_keyword_row is not None else "agentic AI"
+avg_difficulty = top_keyword_row['avg_difficulty'] if top_keyword_row is not None else 65
+top_star_repo = top_keyword_row['top_repo'] if top_keyword_row is not None else "prompt-engineering"
+latest_paper = top_keyword_row['latest_arxiv'] if top_keyword_row is not None else "unknown"
+
+st.markdown(f"""
+> **Target Audience Profile:** AI product managers, prompt engineers, and backend developers seeking autonomous multi-agent orchestration frameworks.
+> **Identified Market Vulnerability:** Search volume for **{top_kw}** is rising, but organic difficulty is high at **{avg_difficulty}**. Developers are increasingly seeking pre-optimized templates, as highlighted by active stars on repositories like **{top_star_repo}**.
+
+#### Recommended Ad Copy Hooks:
+1. **Hook 1 (Emotional Angle):** "Stop coding prompt interfaces from scratch. Orchestrate complex multi-agent workflows in a secure, locally-isolated environment today."
+2. **Hook 2 (Data-Driven Angle):** "Keep up with the academic research on prompt engineering (like: *{latest_paper[:70]}...*). Deploy pre-tested agent frameworks immediately."
+""")
