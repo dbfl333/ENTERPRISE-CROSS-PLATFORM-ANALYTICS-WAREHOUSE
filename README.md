@@ -19,7 +19,7 @@ ENTERPRISE-CROSS-PLATFORM-ANALYTICS-WAREHOUSE/
 │   ├── shopify_extractor.py          # Shopify REST Admin API → checkout funnel (20 fields)
 │   ├── binance_extractor.py          # Binance Public API → BTC/ETH/SOL klines + indicators
 │   ├── market_demand_extractor.py    # Google Trends API → AI keyword demand scoring
-│   └── terrazas_extractor.py        # Venue booking simulator → event reservation logs
+│   └── terrazas_extractor.py        # Pre-launch event reservation staging stream
 ├── 02_raw_data/                      # Dirty data landing zone (gitignored)
 │   ├── shop_raw_orders.csv
 │   ├── binance_metrics.csv
@@ -54,7 +54,7 @@ ENTERPRISE-CROSS-PLATFORM-ANALYTICS-WAREHOUSE/
 | **A** | AI Markets Shop | Shopify REST Admin API | 🟢 Live |
 | **B** | G-Trend Screener | Binance Public API | 🟢 Live |
 | **C** | Agentic Prompt Labs | Google Trends (pytrends) | 🟢 Live |
-| **D** | Terrazas-home | Venue booking simulator | 🟡 Staging |
+| **D** | Terrazas-home | Pre-Launch Telemetry Staging | 🟡 Staging |
 
 ---
 
