@@ -57,7 +57,7 @@ if not os.path.exists(DB_PATH):
 def load_kpis():
     conn = duckdb.connect(DB_PATH, read_only=True)
     shop = conn.execute("SELECT COUNT(*), COALESCE(SUM(total_amount), 0) FROM fact_shop_orders").fetchone()
-    binance = conn.execute("SELECT last_price, fng_value, fng_classification FROM fact_binance_klines ORDER BY open_timestamp DESC LIMIT 1").fetchone()
+    binance = conn.execute("SELECT close_price, fng_value, fng_classification FROM fact_binance_klines ORDER BY open_timestamp DESC LIMIT 1").fetchone()
     prompt = conn.execute("SELECT COUNT(*), AVG(search_interest_score) FROM staging_prompt_telemetry").fetchone()
     terrazas = conn.execute("SELECT COUNT(*), COALESCE(SUM(total_gross_amount), 0) FROM staging_terrazas_bookings").fetchone()
     conn.close()
