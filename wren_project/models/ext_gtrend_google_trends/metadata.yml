@@ -1,0 +1,43 @@
+name: ext_gtrend_google_trends
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_gtrend_google_trends
+columns:
+- name: trend_id
+  type: varchar
+  description: Field trend_id extracted from source table ext_gtrend_google_trends
+- name: keyword_tracked
+  type: varchar
+  description: Field keyword_tracked extracted from source table ext_gtrend_google_trends
+- name: search_date
+  type: timestamp
+  description: Field search_date extracted from source table ext_gtrend_google_trends
+- name: search_interest_score
+  type: integer
+  description: Field search_interest_score extracted from source table ext_gtrend_google_trends
+- name: geo_region
+  type: varchar
+  description: Field geo_region extracted from source table ext_gtrend_google_trends
+- name: top_related_query_1
+  type: varchar
+  description: Field top_related_query_1 extracted from source table ext_gtrend_google_trends
+- name: top_related_query_2
+  type: varchar
+  description: Field top_related_query_2 extracted from source table ext_gtrend_google_trends
+- name: top_related_query_3
+  type: varchar
+  description: Field top_related_query_3 extracted from source table ext_gtrend_google_trends
+- name: rising_query_1
+  type: varchar
+  description: Field rising_query_1 extracted from source table ext_gtrend_google_trends
+- name: rising_query_2
+  type: varchar
+  description: Field rising_query_2 extracted from source table ext_gtrend_google_trends
+- name: weekly_momentum_pct
+  type: double
+  description: Field weekly_momentum_pct extracted from source table ext_gtrend_google_trends
+- name: monthly_momentum_pct
+  type: double
+  description: Field monthly_momentum_pct extracted from source table ext_gtrend_google_trends
+primary_key: trend_id

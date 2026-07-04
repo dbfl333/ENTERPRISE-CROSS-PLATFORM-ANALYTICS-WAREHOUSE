@@ -1,0 +1,7 @@
+schema_version: 5
+name: my_project
+version: '1.0'
+catalog: analytics_production
+schema: main
+data_source: duckdb
+profile: test_profile

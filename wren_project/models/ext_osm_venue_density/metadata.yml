@@ -1,0 +1,27 @@
+name: ext_osm_venue_density
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_osm_venue_density
+columns:
+- name: post_code
+  type: integer
+  description: Field post_code extracted from source table ext_osm_venue_density
+- name: country
+  type: varchar
+  description: Field country extracted from source table ext_osm_venue_density
+- name: place_name
+  type: varchar
+  description: Field place_name extracted from source table ext_osm_venue_density
+- name: state
+  type: varchar
+  description: Field state extracted from source table ext_osm_venue_density
+- name: state_abbreviation
+  type: varchar
+  description: Field state_abbreviation extracted from source table ext_osm_venue_density
+- name: latitude
+  type: double
+  description: Field latitude extracted from source table ext_osm_venue_density
+- name: longitude
+  type: double
+  description: Field longitude extracted from source table ext_osm_venue_density

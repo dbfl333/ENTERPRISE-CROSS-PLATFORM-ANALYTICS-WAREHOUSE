@@ -1,0 +1,15 @@
+name: ext_shop_wikipedia
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_shop_wikipedia
+columns:
+- name: article
+  type: varchar
+  description: Field article extracted from source table ext_shop_wikipedia
+- name: timestamp
+  type: integer
+  description: Field timestamp extracted from source table ext_shop_wikipedia
+- name: views
+  type: integer
+  description: Field views extracted from source table ext_shop_wikipedia

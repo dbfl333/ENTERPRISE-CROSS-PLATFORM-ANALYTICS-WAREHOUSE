@@ -1,0 +1,10 @@
+name: ext_hackernews_tech
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_hackernews_tech
+columns:
+- name: story_id
+  type: integer
+  description: Field story_id extracted from source table ext_hackernews_tech
+primary_key: story_id

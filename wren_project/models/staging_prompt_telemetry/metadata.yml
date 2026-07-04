@@ -1,0 +1,67 @@
+name: staging_prompt_telemetry
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: staging_prompt_telemetry
+columns:
+- name: trend_id
+  type: varchar
+  description: Field trend_id extracted from source table staging_prompt_telemetry
+- name: keyword_tracked
+  type: varchar
+  description: Field keyword_tracked extracted from source table staging_prompt_telemetry
+- name: search_date
+  type: timestamp
+  description: Field search_date extracted from source table staging_prompt_telemetry
+- name: search_interest_score
+  type: integer
+  description: Field search_interest_score extracted from source table staging_prompt_telemetry
+- name: geo_region
+  type: varchar
+  description: Field geo_region extracted from source table staging_prompt_telemetry
+- name: platform_source
+  type: varchar
+  description: Field platform_source extracted from source table staging_prompt_telemetry
+- name: top_related_query_1
+  type: varchar
+  description: Field top_related_query_1 extracted from source table staging_prompt_telemetry
+- name: top_related_query_2
+  type: varchar
+  description: Field top_related_query_2 extracted from source table staging_prompt_telemetry
+- name: top_related_query_3
+  type: varchar
+  description: Field top_related_query_3 extracted from source table staging_prompt_telemetry
+- name: rising_query_1
+  type: varchar
+  description: Field rising_query_1 extracted from source table staging_prompt_telemetry
+- name: rising_query_2
+  type: varchar
+  description: Field rising_query_2 extracted from source table staging_prompt_telemetry
+- name: weekly_momentum_pct
+  type: double
+  description: Field weekly_momentum_pct extracted from source table staging_prompt_telemetry
+- name: monthly_momentum_pct
+  type: double
+  description: Field monthly_momentum_pct extracted from source table staging_prompt_telemetry
+- name: seasonality_index
+  type: double
+  description: Field seasonality_index extracted from source table staging_prompt_telemetry
+- name: competition_level
+  type: varchar
+  description: Field competition_level extracted from source table staging_prompt_telemetry
+- name: estimated_cpc_low
+  type: double
+  description: Field estimated_cpc_low extracted from source table staging_prompt_telemetry
+- name: estimated_cpc_high
+  type: double
+  description: Field estimated_cpc_high extracted from source table staging_prompt_telemetry
+- name: organic_difficulty
+  type: integer
+  description: Field organic_difficulty extracted from source table staging_prompt_telemetry
+- name: search_volume_tier
+  type: varchar
+  description: Field search_volume_tier extracted from source table staging_prompt_telemetry
+- name: profitable_niche_flag
+  type: boolean
+  description: Field profitable_niche_flag extracted from source table staging_prompt_telemetry
+primary_key: trend_id

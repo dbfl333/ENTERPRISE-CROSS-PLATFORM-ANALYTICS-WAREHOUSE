@@ -1,0 +1,60 @@
+name: staging_ga4_sessions
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: staging_ga4_sessions
+columns:
+- name: session_date
+  type: integer
+  description: Field session_date extracted from source table staging_ga4_sessions
+- name: session_source
+  type: varchar
+  description: Field session_source extracted from source table staging_ga4_sessions
+- name: session_medium
+  type: varchar
+  description: Field session_medium extracted from source table staging_ga4_sessions
+- name: campaign_name
+  type: varchar
+  description: Field campaign_name extracted from source table staging_ga4_sessions
+- name: landing_page
+  type: varchar
+  description: Field landing_page extracted from source table staging_ga4_sessions
+- name: country
+  type: varchar
+  description: Field country extracted from source table staging_ga4_sessions
+- name: device_category
+  type: varchar
+  description: Field device_category extracted from source table staging_ga4_sessions
+- name: operating_system
+  type: varchar
+  description: Field operating_system extracted from source table staging_ga4_sessions
+- name: browser
+  type: varchar
+  description: Field browser extracted from source table staging_ga4_sessions
+- name: sessions
+  type: integer
+  description: Field sessions extracted from source table staging_ga4_sessions
+- name: new_users
+  type: integer
+  description: Field new_users extracted from source table staging_ga4_sessions
+- name: bounce_rate
+  type: double
+  description: Field bounce_rate extracted from source table staging_ga4_sessions
+- name: avg_session_duration_sec
+  type: double
+  description: Field avg_session_duration_sec extracted from source table staging_ga4_sessions
+- name: page_views
+  type: integer
+  description: Field page_views extracted from source table staging_ga4_sessions
+- name: conversions
+  type: integer
+  description: Field conversions extracted from source table staging_ga4_sessions
+- name: total_revenue
+  type: double
+  description: Field total_revenue extracted from source table staging_ga4_sessions
+- name: extraction_date
+  type: timestamp
+  description: Field extraction_date extracted from source table staging_ga4_sessions
+- name: data_source
+  type: varchar
+  description: Field data_source extracted from source table staging_ga4_sessions

@@ -1,0 +1,1424 @@
+{
+  "catalog": "analytics_production",
+  "schema": "main",
+  "models": [
+    {
+      "name": "dim_assets",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "dim_assets"
+      },
+      "columns": [
+        {
+          "name": "asset_pair",
+          "type": "varchar",
+          "description": "Field asset_pair extracted from source table dim_assets"
+        },
+        {
+          "name": "asset_name",
+          "type": "varchar",
+          "description": "Field asset_name extracted from source table dim_assets"
+        },
+        {
+          "name": "asset_class",
+          "type": "varchar",
+          "description": "Field asset_class extracted from source table dim_assets"
+        }
+      ]
+    },
+    {
+      "name": "dim_dates",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "dim_dates"
+      },
+      "columns": [
+        {
+          "name": "date_key",
+          "type": "timestamp",
+          "description": "Field date_key extracted from source table dim_dates"
+        },
+        {
+          "name": "year",
+          "type": "integer",
+          "description": "Field year extracted from source table dim_dates"
+        },
+        {
+          "name": "month",
+          "type": "integer",
+          "description": "Field month extracted from source table dim_dates"
+        },
+        {
+          "name": "month_name",
+          "type": "varchar",
+          "description": "Field month_name extracted from source table dim_dates"
+        },
+        {
+          "name": "day",
+          "type": "integer",
+          "description": "Field day extracted from source table dim_dates"
+        },
+        {
+          "name": "day_of_week",
+          "type": "integer",
+          "description": "Field day_of_week extracted from source table dim_dates"
+        },
+        {
+          "name": "day_name",
+          "type": "varchar",
+          "description": "Field day_name extracted from source table dim_dates"
+        },
+        {
+          "name": "quarter",
+          "type": "integer",
+          "description": "Field quarter extracted from source table dim_dates"
+        }
+      ]
+    },
+    {
+      "name": "dim_users",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "dim_users"
+      },
+      "columns": [
+        {
+          "name": "user_key",
+          "type": "varchar",
+          "description": "Field user_key extracted from source table dim_users"
+        },
+        {
+          "name": "customer_id",
+          "type": "varchar",
+          "description": "Field customer_id extracted from source table dim_users"
+        },
+        {
+          "name": "customer_locale",
+          "type": "varchar",
+          "description": "Field customer_locale extracted from source table dim_users"
+        }
+      ],
+      "primaryKey": "customer_id"
+    },
+    {
+      "name": "ext_arxiv_trends",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_arxiv_trends"
+      },
+      "columns": [
+        {
+          "name": "title",
+          "type": "varchar",
+          "description": "Field title extracted from source table ext_arxiv_trends"
+        },
+        {
+          "name": "published",
+          "type": "timestamp",
+          "description": "Field published extracted from source table ext_arxiv_trends"
+        },
+        {
+          "name": "id",
+          "type": "varchar",
+          "description": "Field id extracted from source table ext_arxiv_trends"
+        }
+      ],
+      "primaryKey": "id"
+    },
+    {
+      "name": "ext_binance_btc",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_binance_btc"
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "varchar",
+          "description": "Field id extracted from source table ext_binance_btc"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "description": "Field name extracted from source table ext_binance_btc"
+        },
+        {
+          "name": "symbol",
+          "type": "varchar",
+          "description": "Field symbol extracted from source table ext_binance_btc"
+        },
+        {
+          "name": "market_cap_rank",
+          "type": "integer",
+          "description": "Field market_cap_rank extracted from source table ext_binance_btc"
+        },
+        {
+          "name": "price_btc",
+          "type": "double",
+          "description": "Field price_btc extracted from source table ext_binance_btc"
+        },
+        {
+          "name": "score",
+          "type": "integer",
+          "description": "Field score extracted from source table ext_binance_btc"
+        }
+      ],
+      "primaryKey": "id"
+    },
+    {
+      "name": "ext_blockchain_network",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_blockchain_network"
+      },
+      "columns": [
+        {
+          "name": "market_price_usd",
+          "type": "double",
+          "description": "Field market_price_usd extracted from source table ext_blockchain_network"
+        },
+        {
+          "name": "hash_rate",
+          "type": "double",
+          "description": "Field hash_rate extracted from source table ext_blockchain_network"
+        },
+        {
+          "name": "total_fees_btc",
+          "type": "double",
+          "description": "Field total_fees_btc extracted from source table ext_blockchain_network"
+        },
+        {
+          "name": "n_btc_mined",
+          "type": "double",
+          "description": "Field n_btc_mined extracted from source table ext_blockchain_network"
+        },
+        {
+          "name": "minutes_between_blocks",
+          "type": "double",
+          "description": "Field minutes_between_blocks extracted from source table ext_blockchain_network"
+        },
+        {
+          "name": "timestamp",
+          "type": "integer",
+          "description": "Field timestamp extracted from source table ext_blockchain_network"
+        }
+      ]
+    },
+    {
+      "name": "ext_crypto_sentiment",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_crypto_sentiment"
+      },
+      "columns": [
+        {
+          "name": "value",
+          "type": "integer",
+          "description": "Field value extracted from source table ext_crypto_sentiment"
+        },
+        {
+          "name": "value_classification",
+          "type": "varchar",
+          "description": "Field value_classification extracted from source table ext_crypto_sentiment"
+        },
+        {
+          "name": "timestamp",
+          "type": "integer",
+          "description": "Field timestamp extracted from source table ext_crypto_sentiment"
+        }
+      ]
+    },
+    {
+      "name": "ext_github_agent_demand",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_github_agent_demand"
+      },
+      "columns": [
+        {
+          "name": "id",
+          "type": "integer",
+          "description": "Field id extracted from source table ext_github_agent_demand"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "description": "Field name extracted from source table ext_github_agent_demand"
+        },
+        {
+          "name": "full_name",
+          "type": "varchar",
+          "description": "Field full_name extracted from source table ext_github_agent_demand"
+        },
+        {
+          "name": "stargazers_count",
+          "type": "integer",
+          "description": "Field stargazers_count extracted from source table ext_github_agent_demand"
+        },
+        {
+          "name": "forks_count",
+          "type": "integer",
+          "description": "Field forks_count extracted from source table ext_github_agent_demand"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp",
+          "description": "Field updated_at extracted from source table ext_github_agent_demand"
+        }
+      ],
+      "primaryKey": "id"
+    },
+    {
+      "name": "ext_gtrend_google_trends",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_gtrend_google_trends"
+      },
+      "columns": [
+        {
+          "name": "trend_id",
+          "type": "varchar",
+          "description": "Field trend_id extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "keyword_tracked",
+          "type": "varchar",
+          "description": "Field keyword_tracked extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "search_date",
+          "type": "timestamp",
+          "description": "Field search_date extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "search_interest_score",
+          "type": "integer",
+          "description": "Field search_interest_score extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "geo_region",
+          "type": "varchar",
+          "description": "Field geo_region extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "top_related_query_1",
+          "type": "varchar",
+          "description": "Field top_related_query_1 extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "top_related_query_2",
+          "type": "varchar",
+          "description": "Field top_related_query_2 extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "top_related_query_3",
+          "type": "varchar",
+          "description": "Field top_related_query_3 extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "rising_query_1",
+          "type": "varchar",
+          "description": "Field rising_query_1 extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "rising_query_2",
+          "type": "varchar",
+          "description": "Field rising_query_2 extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "weekly_momentum_pct",
+          "type": "double",
+          "description": "Field weekly_momentum_pct extracted from source table ext_gtrend_google_trends"
+        },
+        {
+          "name": "monthly_momentum_pct",
+          "type": "double",
+          "description": "Field monthly_momentum_pct extracted from source table ext_gtrend_google_trends"
+        }
+      ],
+      "primaryKey": "trend_id"
+    },
+    {
+      "name": "ext_hackernews_tech",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_hackernews_tech"
+      },
+      "columns": [
+        {
+          "name": "story_id",
+          "type": "integer",
+          "description": "Field story_id extracted from source table ext_hackernews_tech"
+        }
+      ],
+      "primaryKey": "story_id"
+    },
+    {
+      "name": "ext_juarez_weather",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_juarez_weather"
+      },
+      "columns": [
+        {
+          "name": "forecast_date",
+          "type": "timestamp",
+          "description": "Field forecast_date extracted from source table ext_juarez_weather"
+        },
+        {
+          "name": "max_temp",
+          "type": "double",
+          "description": "Field max_temp extracted from source table ext_juarez_weather"
+        },
+        {
+          "name": "precipitation",
+          "type": "double",
+          "description": "Field precipitation extracted from source table ext_juarez_weather"
+        }
+      ]
+    },
+    {
+      "name": "ext_mexico_holidays",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_mexico_holidays"
+      },
+      "columns": [
+        {
+          "name": "date",
+          "type": "timestamp",
+          "description": "Field date extracted from source table ext_mexico_holidays"
+        },
+        {
+          "name": "local_name",
+          "type": "varchar",
+          "description": "Field local_name extracted from source table ext_mexico_holidays"
+        },
+        {
+          "name": "name",
+          "type": "varchar",
+          "description": "Field name extracted from source table ext_mexico_holidays"
+        },
+        {
+          "name": "country_code",
+          "type": "varchar",
+          "description": "Field country_code extracted from source table ext_mexico_holidays"
+        },
+        {
+          "name": "global_holiday",
+          "type": "boolean",
+          "description": "Field global_holiday extracted from source table ext_mexico_holidays"
+        }
+      ]
+    },
+    {
+      "name": "ext_osm_venue_density",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_osm_venue_density"
+      },
+      "columns": [
+        {
+          "name": "post_code",
+          "type": "integer",
+          "description": "Field post_code extracted from source table ext_osm_venue_density"
+        },
+        {
+          "name": "country",
+          "type": "varchar",
+          "description": "Field country extracted from source table ext_osm_venue_density"
+        },
+        {
+          "name": "place_name",
+          "type": "varchar",
+          "description": "Field place_name extracted from source table ext_osm_venue_density"
+        },
+        {
+          "name": "state",
+          "type": "varchar",
+          "description": "Field state extracted from source table ext_osm_venue_density"
+        },
+        {
+          "name": "state_abbreviation",
+          "type": "varchar",
+          "description": "Field state_abbreviation extracted from source table ext_osm_venue_density"
+        },
+        {
+          "name": "latitude",
+          "type": "double",
+          "description": "Field latitude extracted from source table ext_osm_venue_density"
+        },
+        {
+          "name": "longitude",
+          "type": "double",
+          "description": "Field longitude extracted from source table ext_osm_venue_density"
+        }
+      ]
+    },
+    {
+      "name": "ext_prompt_google_trends",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_prompt_google_trends"
+      },
+      "columns": [
+        {
+          "name": "trend_id",
+          "type": "varchar",
+          "description": "Field trend_id extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "keyword_tracked",
+          "type": "varchar",
+          "description": "Field keyword_tracked extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "search_date",
+          "type": "timestamp",
+          "description": "Field search_date extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "search_interest_score",
+          "type": "integer",
+          "description": "Field search_interest_score extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "geo_region",
+          "type": "varchar",
+          "description": "Field geo_region extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "top_related_query_1",
+          "type": "varchar",
+          "description": "Field top_related_query_1 extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "top_related_query_2",
+          "type": "varchar",
+          "description": "Field top_related_query_2 extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "top_related_query_3",
+          "type": "varchar",
+          "description": "Field top_related_query_3 extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "rising_query_1",
+          "type": "varchar",
+          "description": "Field rising_query_1 extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "rising_query_2",
+          "type": "varchar",
+          "description": "Field rising_query_2 extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "weekly_momentum_pct",
+          "type": "double",
+          "description": "Field weekly_momentum_pct extracted from source table ext_prompt_google_trends"
+        },
+        {
+          "name": "monthly_momentum_pct",
+          "type": "double",
+          "description": "Field monthly_momentum_pct extracted from source table ext_prompt_google_trends"
+        }
+      ],
+      "primaryKey": "trend_id"
+    },
+    {
+      "name": "ext_shop_buyer_geo",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_shop_buyer_geo"
+      },
+      "columns": [
+        {
+          "name": "ip",
+          "type": "varchar",
+          "description": "Field ip extracted from source table ext_shop_buyer_geo"
+        },
+        {
+          "name": "country",
+          "type": "varchar",
+          "description": "Field country extracted from source table ext_shop_buyer_geo"
+        },
+        {
+          "name": "country_code",
+          "type": "varchar",
+          "description": "Field country_code extracted from source table ext_shop_buyer_geo"
+        },
+        {
+          "name": "city",
+          "type": "varchar",
+          "description": "Field city extracted from source table ext_shop_buyer_geo"
+        },
+        {
+          "name": "latitude",
+          "type": "double",
+          "description": "Field latitude extracted from source table ext_shop_buyer_geo"
+        },
+        {
+          "name": "longitude",
+          "type": "double",
+          "description": "Field longitude extracted from source table ext_shop_buyer_geo"
+        },
+        {
+          "name": "timezone",
+          "type": "varchar",
+          "description": "Field timezone extracted from source table ext_shop_buyer_geo"
+        }
+      ]
+    },
+    {
+      "name": "ext_shop_forex",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_shop_forex"
+      },
+      "columns": [
+        {
+          "name": "base",
+          "type": "varchar",
+          "description": "Field base extracted from source table ext_shop_forex"
+        },
+        {
+          "name": "date",
+          "type": "timestamp",
+          "description": "Field date extracted from source table ext_shop_forex"
+        },
+        {
+          "name": "rate_EUR",
+          "type": "double",
+          "description": "Field rate_EUR extracted from source table ext_shop_forex"
+        },
+        {
+          "name": "rate_GBP",
+          "type": "double",
+          "description": "Field rate_GBP extracted from source table ext_shop_forex"
+        },
+        {
+          "name": "rate_MXN",
+          "type": "double",
+          "description": "Field rate_MXN extracted from source table ext_shop_forex"
+        }
+      ]
+    },
+    {
+      "name": "ext_shop_google_trends",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_shop_google_trends"
+      },
+      "columns": [
+        {
+          "name": "trend_id",
+          "type": "varchar",
+          "description": "Field trend_id extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "keyword_tracked",
+          "type": "varchar",
+          "description": "Field keyword_tracked extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "search_date",
+          "type": "timestamp",
+          "description": "Field search_date extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "search_interest_score",
+          "type": "integer",
+          "description": "Field search_interest_score extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "geo_region",
+          "type": "varchar",
+          "description": "Field geo_region extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "top_related_query_1",
+          "type": "varchar",
+          "description": "Field top_related_query_1 extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "top_related_query_2",
+          "type": "varchar",
+          "description": "Field top_related_query_2 extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "top_related_query_3",
+          "type": "varchar",
+          "description": "Field top_related_query_3 extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "rising_query_1",
+          "type": "varchar",
+          "description": "Field rising_query_1 extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "rising_query_2",
+          "type": "varchar",
+          "description": "Field rising_query_2 extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "weekly_momentum_pct",
+          "type": "double",
+          "description": "Field weekly_momentum_pct extracted from source table ext_shop_google_trends"
+        },
+        {
+          "name": "monthly_momentum_pct",
+          "type": "double",
+          "description": "Field monthly_momentum_pct extracted from source table ext_shop_google_trends"
+        }
+      ],
+      "primaryKey": "trend_id"
+    },
+    {
+      "name": "ext_shop_wikipedia",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_shop_wikipedia"
+      },
+      "columns": [
+        {
+          "name": "article",
+          "type": "varchar",
+          "description": "Field article extracted from source table ext_shop_wikipedia"
+        },
+        {
+          "name": "timestamp",
+          "type": "integer",
+          "description": "Field timestamp extracted from source table ext_shop_wikipedia"
+        },
+        {
+          "name": "views",
+          "type": "integer",
+          "description": "Field views extracted from source table ext_shop_wikipedia"
+        }
+      ]
+    },
+    {
+      "name": "ext_terrazas_google_trends",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "ext_terrazas_google_trends"
+      },
+      "columns": [
+        {
+          "name": "trend_id",
+          "type": "varchar",
+          "description": "Field trend_id extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "keyword_tracked",
+          "type": "varchar",
+          "description": "Field keyword_tracked extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "search_date",
+          "type": "timestamp",
+          "description": "Field search_date extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "search_interest_score",
+          "type": "integer",
+          "description": "Field search_interest_score extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "geo_region",
+          "type": "varchar",
+          "description": "Field geo_region extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "top_related_query_1",
+          "type": "varchar",
+          "description": "Field top_related_query_1 extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "top_related_query_2",
+          "type": "varchar",
+          "description": "Field top_related_query_2 extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "top_related_query_3",
+          "type": "varchar",
+          "description": "Field top_related_query_3 extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "rising_query_1",
+          "type": "varchar",
+          "description": "Field rising_query_1 extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "rising_query_2",
+          "type": "varchar",
+          "description": "Field rising_query_2 extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "weekly_momentum_pct",
+          "type": "double",
+          "description": "Field weekly_momentum_pct extracted from source table ext_terrazas_google_trends"
+        },
+        {
+          "name": "monthly_momentum_pct",
+          "type": "double",
+          "description": "Field monthly_momentum_pct extracted from source table ext_terrazas_google_trends"
+        }
+      ],
+      "primaryKey": "trend_id"
+    },
+    {
+      "name": "fact_binance_klines",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "fact_binance_klines"
+      },
+      "columns": [
+        {
+          "name": "symbol",
+          "type": "varchar",
+          "description": "Field symbol extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "price_change",
+          "type": "double",
+          "description": "Field price_change extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "price_change_percent",
+          "type": "double",
+          "description": "Field price_change_percent extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "weighted_avg_price",
+          "type": "double",
+          "description": "Field weighted_avg_price extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "last_price",
+          "type": "double",
+          "description": "Field last_price extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "last_qty",
+          "type": "double",
+          "description": "Field last_qty extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "open_price",
+          "type": "double",
+          "description": "Field open_price extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "high_price",
+          "type": "double",
+          "description": "Field high_price extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "low_price",
+          "type": "double",
+          "description": "Field low_price extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "volume",
+          "type": "double",
+          "description": "Field volume extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "quote_volume",
+          "type": "double",
+          "description": "Field quote_volume extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "open_time",
+          "type": "integer",
+          "description": "Field open_time extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "close_time",
+          "type": "integer",
+          "description": "Field close_time extracted from source table fact_binance_klines"
+        },
+        {
+          "name": "count",
+          "type": "integer",
+          "description": "Field count extracted from source table fact_binance_klines"
+        }
+      ]
+    },
+    {
+      "name": "fact_shop_orders",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "fact_shop_orders"
+      },
+      "columns": [
+        {
+          "name": "checkout_id",
+          "type": "integer",
+          "description": "Field checkout_id extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "customer_id",
+          "type": "integer",
+          "description": "Field customer_id extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "customer_locale",
+          "type": "varchar",
+          "description": "Field customer_locale extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "referring_site",
+          "type": "varchar",
+          "description": "Field referring_site extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "landing_site",
+          "type": "varchar",
+          "description": "Field landing_site extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "abandoned_checkout_url",
+          "type": "varchar",
+          "description": "Field abandoned_checkout_url extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp",
+          "description": "Field created_at extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "completed_at",
+          "type": "timestamp",
+          "description": "Field completed_at extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "time_in_funnel_seconds",
+          "type": "integer",
+          "description": "Field time_in_funnel_seconds extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "currency",
+          "type": "varchar",
+          "description": "Field currency extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "subtotal_price",
+          "type": "double",
+          "description": "Field subtotal_price extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "total_discounts",
+          "type": "double",
+          "description": "Field total_discounts extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "total_tax",
+          "type": "double",
+          "description": "Field total_tax extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "total_price",
+          "type": "double",
+          "description": "Field total_price extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "financial_status",
+          "type": "varchar",
+          "description": "Field financial_status extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "cart_token",
+          "type": "varchar",
+          "description": "Field cart_token extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "device_type",
+          "type": "varchar",
+          "description": "Field device_type extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "browser_ip",
+          "type": "varchar",
+          "description": "Field browser_ip extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "buyer_accepts_marketing",
+          "type": "boolean",
+          "description": "Field buyer_accepts_marketing extracted from source table fact_shop_orders"
+        },
+        {
+          "name": "cancel_reason",
+          "type": "varchar",
+          "description": "Field cancel_reason extracted from source table fact_shop_orders"
+        }
+      ],
+      "primaryKey": "checkout_id"
+    },
+    {
+      "name": "staging_ga4_sessions",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "staging_ga4_sessions"
+      },
+      "columns": [
+        {
+          "name": "session_date",
+          "type": "integer",
+          "description": "Field session_date extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "session_source",
+          "type": "varchar",
+          "description": "Field session_source extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "session_medium",
+          "type": "varchar",
+          "description": "Field session_medium extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "campaign_name",
+          "type": "varchar",
+          "description": "Field campaign_name extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "landing_page",
+          "type": "varchar",
+          "description": "Field landing_page extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "country",
+          "type": "varchar",
+          "description": "Field country extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "device_category",
+          "type": "varchar",
+          "description": "Field device_category extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "operating_system",
+          "type": "varchar",
+          "description": "Field operating_system extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "browser",
+          "type": "varchar",
+          "description": "Field browser extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "sessions",
+          "type": "integer",
+          "description": "Field sessions extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "new_users",
+          "type": "integer",
+          "description": "Field new_users extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "bounce_rate",
+          "type": "double",
+          "description": "Field bounce_rate extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "avg_session_duration_sec",
+          "type": "double",
+          "description": "Field avg_session_duration_sec extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "page_views",
+          "type": "integer",
+          "description": "Field page_views extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "conversions",
+          "type": "integer",
+          "description": "Field conversions extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "total_revenue",
+          "type": "double",
+          "description": "Field total_revenue extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "extraction_date",
+          "type": "timestamp",
+          "description": "Field extraction_date extracted from source table staging_ga4_sessions"
+        },
+        {
+          "name": "data_source",
+          "type": "varchar",
+          "description": "Field data_source extracted from source table staging_ga4_sessions"
+        }
+      ]
+    },
+    {
+      "name": "staging_prompt_telemetry",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "staging_prompt_telemetry"
+      },
+      "columns": [
+        {
+          "name": "trend_id",
+          "type": "varchar",
+          "description": "Field trend_id extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "keyword_tracked",
+          "type": "varchar",
+          "description": "Field keyword_tracked extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "search_date",
+          "type": "timestamp",
+          "description": "Field search_date extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "search_interest_score",
+          "type": "integer",
+          "description": "Field search_interest_score extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "geo_region",
+          "type": "varchar",
+          "description": "Field geo_region extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "platform_source",
+          "type": "varchar",
+          "description": "Field platform_source extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "top_related_query_1",
+          "type": "varchar",
+          "description": "Field top_related_query_1 extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "top_related_query_2",
+          "type": "varchar",
+          "description": "Field top_related_query_2 extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "top_related_query_3",
+          "type": "varchar",
+          "description": "Field top_related_query_3 extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "rising_query_1",
+          "type": "varchar",
+          "description": "Field rising_query_1 extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "rising_query_2",
+          "type": "varchar",
+          "description": "Field rising_query_2 extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "weekly_momentum_pct",
+          "type": "double",
+          "description": "Field weekly_momentum_pct extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "monthly_momentum_pct",
+          "type": "double",
+          "description": "Field monthly_momentum_pct extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "seasonality_index",
+          "type": "double",
+          "description": "Field seasonality_index extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "competition_level",
+          "type": "varchar",
+          "description": "Field competition_level extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "estimated_cpc_low",
+          "type": "double",
+          "description": "Field estimated_cpc_low extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "estimated_cpc_high",
+          "type": "double",
+          "description": "Field estimated_cpc_high extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "organic_difficulty",
+          "type": "integer",
+          "description": "Field organic_difficulty extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "search_volume_tier",
+          "type": "varchar",
+          "description": "Field search_volume_tier extracted from source table staging_prompt_telemetry"
+        },
+        {
+          "name": "profitable_niche_flag",
+          "type": "boolean",
+          "description": "Field profitable_niche_flag extracted from source table staging_prompt_telemetry"
+        }
+      ],
+      "primaryKey": "trend_id"
+    },
+    {
+      "name": "staging_shopify_marketing",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "staging_shopify_marketing"
+      },
+      "columns": [
+        {
+          "name": "event_id",
+          "type": "varchar",
+          "description": "Field event_id extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "started_at",
+          "type": "timestamp",
+          "description": "Field started_at extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "ended_at",
+          "type": "timestamp",
+          "description": "Field ended_at extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "scheduled_to_end",
+          "type": "timestamp",
+          "description": "Field scheduled_to_end extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "budget",
+          "type": "double",
+          "description": "Field budget extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "currency",
+          "type": "varchar",
+          "description": "Field currency extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "event_type",
+          "type": "varchar",
+          "description": "Field event_type extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "source",
+          "type": "varchar",
+          "description": "Field source extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "channel",
+          "type": "varchar",
+          "description": "Field channel extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "utm_source",
+          "type": "varchar",
+          "description": "Field utm_source extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "utm_medium",
+          "type": "varchar",
+          "description": "Field utm_medium extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "utm_campaign",
+          "type": "varchar",
+          "description": "Field utm_campaign extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "paid_budget_percent_used",
+          "type": "double",
+          "description": "Field paid_budget_percent_used extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "impressions",
+          "type": "integer",
+          "description": "Field impressions extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "clicks",
+          "type": "integer",
+          "description": "Field clicks extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "click_through_rate",
+          "type": "double",
+          "description": "Field click_through_rate extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "spend",
+          "type": "double",
+          "description": "Field spend extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "conversions_attributed",
+          "type": "integer",
+          "description": "Field conversions_attributed extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "attributed_revenue",
+          "type": "double",
+          "description": "Field attributed_revenue extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "roas",
+          "type": "double",
+          "description": "Field roas extracted from source table staging_shopify_marketing"
+        },
+        {
+          "name": "extraction_date",
+          "type": "timestamp",
+          "description": "Field extraction_date extracted from source table staging_shopify_marketing"
+        }
+      ],
+      "primaryKey": "event_id"
+    },
+    {
+      "name": "staging_terrazas_bookings",
+      "tableReference": {
+        "catalog": "analytics_production",
+        "schema": "main",
+        "table": "staging_terrazas_bookings"
+      },
+      "columns": [
+        {
+          "name": "reservation_id",
+          "type": "varchar",
+          "description": "Field reservation_id extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "venue_id",
+          "type": "varchar",
+          "description": "Field venue_id extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "customer_id",
+          "type": "varchar",
+          "description": "Field customer_id extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "event_type",
+          "type": "varchar",
+          "description": "Field event_type extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "check_in_timestamp",
+          "type": "timestamp",
+          "description": "Field check_in_timestamp extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "check_out_timestamp",
+          "type": "timestamp",
+          "description": "Field check_out_timestamp extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "total_hours_booked",
+          "type": "double",
+          "description": "Field total_hours_booked extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "base_venue_price",
+          "type": "double",
+          "description": "Field base_venue_price extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "seasonal_multiplier",
+          "type": "double",
+          "description": "Field seasonal_multiplier extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "inventory_rentals_json",
+          "type": "varchar",
+          "description": "Field inventory_rentals_json extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "service_addons_json",
+          "type": "varchar",
+          "description": "Field service_addons_json extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "security_deposit_held",
+          "type": "double",
+          "description": "Field security_deposit_held extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "cleaning_fee",
+          "type": "double",
+          "description": "Field cleaning_fee extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "total_gross_amount",
+          "type": "double",
+          "description": "Field total_gross_amount extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "payment_status",
+          "type": "varchar",
+          "description": "Field payment_status extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "contract_signed_status",
+          "type": "boolean",
+          "description": "Field contract_signed_status extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "cancellation_policy_type",
+          "type": "varchar",
+          "description": "Field cancellation_policy_type extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "lead_time_days",
+          "type": "integer",
+          "description": "Field lead_time_days extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "customer_rating_score",
+          "type": "integer",
+          "description": "Field customer_rating_score extracted from source table staging_terrazas_bookings"
+        },
+        {
+          "name": "local_search_demand_score",
+          "type": "integer",
+          "description": "Field local_search_demand_score extracted from source table staging_terrazas_bookings"
+        }
+      ],
+      "primaryKey": "reservation_id"
+    }
+  ],
+  "relationships": [],
+  "views": [],
+  "cubes": [],
+  "dataSource": "duckdb",
+  "layoutVersion": 3
+}

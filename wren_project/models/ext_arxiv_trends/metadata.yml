@@ -1,0 +1,16 @@
+name: ext_arxiv_trends
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_arxiv_trends
+columns:
+- name: title
+  type: varchar
+  description: Field title extracted from source table ext_arxiv_trends
+- name: published
+  type: timestamp
+  description: Field published extracted from source table ext_arxiv_trends
+- name: id
+  type: varchar
+  description: Field id extracted from source table ext_arxiv_trends
+primary_key: id

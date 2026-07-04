@@ -1,0 +1,27 @@
+name: ext_shop_buyer_geo
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_shop_buyer_geo
+columns:
+- name: ip
+  type: varchar
+  description: Field ip extracted from source table ext_shop_buyer_geo
+- name: country
+  type: varchar
+  description: Field country extracted from source table ext_shop_buyer_geo
+- name: country_code
+  type: varchar
+  description: Field country_code extracted from source table ext_shop_buyer_geo
+- name: city
+  type: varchar
+  description: Field city extracted from source table ext_shop_buyer_geo
+- name: latitude
+  type: double
+  description: Field latitude extracted from source table ext_shop_buyer_geo
+- name: longitude
+  type: double
+  description: Field longitude extracted from source table ext_shop_buyer_geo
+- name: timezone
+  type: varchar
+  description: Field timezone extracted from source table ext_shop_buyer_geo

@@ -1,0 +1,15 @@
+name: ext_juarez_weather
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_juarez_weather
+columns:
+- name: forecast_date
+  type: timestamp
+  description: Field forecast_date extracted from source table ext_juarez_weather
+- name: max_temp
+  type: double
+  description: Field max_temp extracted from source table ext_juarez_weather
+- name: precipitation
+  type: double
+  description: Field precipitation extracted from source table ext_juarez_weather

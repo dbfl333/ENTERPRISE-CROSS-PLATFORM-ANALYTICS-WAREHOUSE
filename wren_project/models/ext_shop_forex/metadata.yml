@@ -1,0 +1,21 @@
+name: ext_shop_forex
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_shop_forex
+columns:
+- name: base
+  type: varchar
+  description: Field base extracted from source table ext_shop_forex
+- name: date
+  type: timestamp
+  description: Field date extracted from source table ext_shop_forex
+- name: rate_EUR
+  type: double
+  description: Field rate_EUR extracted from source table ext_shop_forex
+- name: rate_GBP
+  type: double
+  description: Field rate_GBP extracted from source table ext_shop_forex
+- name: rate_MXN
+  type: double
+  description: Field rate_MXN extracted from source table ext_shop_forex

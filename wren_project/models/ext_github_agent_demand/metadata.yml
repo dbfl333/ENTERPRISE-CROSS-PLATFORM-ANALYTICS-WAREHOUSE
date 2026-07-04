@@ -1,0 +1,25 @@
+name: ext_github_agent_demand
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_github_agent_demand
+columns:
+- name: id
+  type: integer
+  description: Field id extracted from source table ext_github_agent_demand
+- name: name
+  type: varchar
+  description: Field name extracted from source table ext_github_agent_demand
+- name: full_name
+  type: varchar
+  description: Field full_name extracted from source table ext_github_agent_demand
+- name: stargazers_count
+  type: integer
+  description: Field stargazers_count extracted from source table ext_github_agent_demand
+- name: forks_count
+  type: integer
+  description: Field forks_count extracted from source table ext_github_agent_demand
+- name: updated_at
+  type: timestamp
+  description: Field updated_at extracted from source table ext_github_agent_demand
+primary_key: id

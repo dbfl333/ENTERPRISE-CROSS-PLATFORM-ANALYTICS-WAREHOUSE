@@ -1,0 +1,21 @@
+name: ext_mexico_holidays
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_mexico_holidays
+columns:
+- name: date
+  type: timestamp
+  description: Field date extracted from source table ext_mexico_holidays
+- name: local_name
+  type: varchar
+  description: Field local_name extracted from source table ext_mexico_holidays
+- name: name
+  type: varchar
+  description: Field name extracted from source table ext_mexico_holidays
+- name: country_code
+  type: varchar
+  description: Field country_code extracted from source table ext_mexico_holidays
+- name: global_holiday
+  type: boolean
+  description: Field global_holiday extracted from source table ext_mexico_holidays

@@ -1,0 +1,70 @@
+name: staging_shopify_marketing
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: staging_shopify_marketing
+columns:
+- name: event_id
+  type: varchar
+  description: Field event_id extracted from source table staging_shopify_marketing
+- name: started_at
+  type: timestamp
+  description: Field started_at extracted from source table staging_shopify_marketing
+- name: ended_at
+  type: timestamp
+  description: Field ended_at extracted from source table staging_shopify_marketing
+- name: scheduled_to_end
+  type: timestamp
+  description: Field scheduled_to_end extracted from source table staging_shopify_marketing
+- name: budget
+  type: double
+  description: Field budget extracted from source table staging_shopify_marketing
+- name: currency
+  type: varchar
+  description: Field currency extracted from source table staging_shopify_marketing
+- name: event_type
+  type: varchar
+  description: Field event_type extracted from source table staging_shopify_marketing
+- name: source
+  type: varchar
+  description: Field source extracted from source table staging_shopify_marketing
+- name: channel
+  type: varchar
+  description: Field channel extracted from source table staging_shopify_marketing
+- name: utm_source
+  type: varchar
+  description: Field utm_source extracted from source table staging_shopify_marketing
+- name: utm_medium
+  type: varchar
+  description: Field utm_medium extracted from source table staging_shopify_marketing
+- name: utm_campaign
+  type: varchar
+  description: Field utm_campaign extracted from source table staging_shopify_marketing
+- name: paid_budget_percent_used
+  type: double
+  description: Field paid_budget_percent_used extracted from source table staging_shopify_marketing
+- name: impressions
+  type: integer
+  description: Field impressions extracted from source table staging_shopify_marketing
+- name: clicks
+  type: integer
+  description: Field clicks extracted from source table staging_shopify_marketing
+- name: click_through_rate
+  type: double
+  description: Field click_through_rate extracted from source table staging_shopify_marketing
+- name: spend
+  type: double
+  description: Field spend extracted from source table staging_shopify_marketing
+- name: conversions_attributed
+  type: integer
+  description: Field conversions_attributed extracted from source table staging_shopify_marketing
+- name: attributed_revenue
+  type: double
+  description: Field attributed_revenue extracted from source table staging_shopify_marketing
+- name: roas
+  type: double
+  description: Field roas extracted from source table staging_shopify_marketing
+- name: extraction_date
+  type: timestamp
+  description: Field extraction_date extracted from source table staging_shopify_marketing
+primary_key: event_id

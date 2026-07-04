@@ -1,0 +1,25 @@
+name: ext_binance_btc
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_binance_btc
+columns:
+- name: id
+  type: varchar
+  description: Field id extracted from source table ext_binance_btc
+- name: name
+  type: varchar
+  description: Field name extracted from source table ext_binance_btc
+- name: symbol
+  type: varchar
+  description: Field symbol extracted from source table ext_binance_btc
+- name: market_cap_rank
+  type: integer
+  description: Field market_cap_rank extracted from source table ext_binance_btc
+- name: price_btc
+  type: double
+  description: Field price_btc extracted from source table ext_binance_btc
+- name: score
+  type: integer
+  description: Field score extracted from source table ext_binance_btc
+primary_key: id

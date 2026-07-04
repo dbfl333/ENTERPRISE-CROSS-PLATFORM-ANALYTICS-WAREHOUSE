@@ -1,0 +1,30 @@
+name: dim_dates
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: dim_dates
+columns:
+- name: date_key
+  type: timestamp
+  description: Field date_key extracted from source table dim_dates
+- name: year
+  type: integer
+  description: Field year extracted from source table dim_dates
+- name: month
+  type: integer
+  description: Field month extracted from source table dim_dates
+- name: month_name
+  type: varchar
+  description: Field month_name extracted from source table dim_dates
+- name: day
+  type: integer
+  description: Field day extracted from source table dim_dates
+- name: day_of_week
+  type: integer
+  description: Field day_of_week extracted from source table dim_dates
+- name: day_name
+  type: varchar
+  description: Field day_name extracted from source table dim_dates
+- name: quarter
+  type: integer
+  description: Field quarter extracted from source table dim_dates

@@ -1,0 +1,16 @@
+name: dim_users
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: dim_users
+columns:
+- name: user_key
+  type: varchar
+  description: Field user_key extracted from source table dim_users
+- name: customer_id
+  type: varchar
+  description: Field customer_id extracted from source table dim_users
+- name: customer_locale
+  type: varchar
+  description: Field customer_locale extracted from source table dim_users
+primary_key: customer_id

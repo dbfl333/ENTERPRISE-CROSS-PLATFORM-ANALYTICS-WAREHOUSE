@@ -1,0 +1,67 @@
+name: fact_shop_orders
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: fact_shop_orders
+columns:
+- name: checkout_id
+  type: integer
+  description: Field checkout_id extracted from source table fact_shop_orders
+- name: customer_id
+  type: integer
+  description: Field customer_id extracted from source table fact_shop_orders
+- name: customer_locale
+  type: varchar
+  description: Field customer_locale extracted from source table fact_shop_orders
+- name: referring_site
+  type: varchar
+  description: Field referring_site extracted from source table fact_shop_orders
+- name: landing_site
+  type: varchar
+  description: Field landing_site extracted from source table fact_shop_orders
+- name: abandoned_checkout_url
+  type: varchar
+  description: Field abandoned_checkout_url extracted from source table fact_shop_orders
+- name: created_at
+  type: timestamp
+  description: Field created_at extracted from source table fact_shop_orders
+- name: completed_at
+  type: timestamp
+  description: Field completed_at extracted from source table fact_shop_orders
+- name: time_in_funnel_seconds
+  type: integer
+  description: Field time_in_funnel_seconds extracted from source table fact_shop_orders
+- name: currency
+  type: varchar
+  description: Field currency extracted from source table fact_shop_orders
+- name: subtotal_price
+  type: double
+  description: Field subtotal_price extracted from source table fact_shop_orders
+- name: total_discounts
+  type: double
+  description: Field total_discounts extracted from source table fact_shop_orders
+- name: total_tax
+  type: double
+  description: Field total_tax extracted from source table fact_shop_orders
+- name: total_price
+  type: double
+  description: Field total_price extracted from source table fact_shop_orders
+- name: financial_status
+  type: varchar
+  description: Field financial_status extracted from source table fact_shop_orders
+- name: cart_token
+  type: varchar
+  description: Field cart_token extracted from source table fact_shop_orders
+- name: device_type
+  type: varchar
+  description: Field device_type extracted from source table fact_shop_orders
+- name: browser_ip
+  type: varchar
+  description: Field browser_ip extracted from source table fact_shop_orders
+- name: buyer_accepts_marketing
+  type: boolean
+  description: Field buyer_accepts_marketing extracted from source table fact_shop_orders
+- name: cancel_reason
+  type: varchar
+  description: Field cancel_reason extracted from source table fact_shop_orders
+primary_key: checkout_id

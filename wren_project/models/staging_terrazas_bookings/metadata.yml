@@ -1,0 +1,67 @@
+name: staging_terrazas_bookings
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: staging_terrazas_bookings
+columns:
+- name: reservation_id
+  type: varchar
+  description: Field reservation_id extracted from source table staging_terrazas_bookings
+- name: venue_id
+  type: varchar
+  description: Field venue_id extracted from source table staging_terrazas_bookings
+- name: customer_id
+  type: varchar
+  description: Field customer_id extracted from source table staging_terrazas_bookings
+- name: event_type
+  type: varchar
+  description: Field event_type extracted from source table staging_terrazas_bookings
+- name: check_in_timestamp
+  type: timestamp
+  description: Field check_in_timestamp extracted from source table staging_terrazas_bookings
+- name: check_out_timestamp
+  type: timestamp
+  description: Field check_out_timestamp extracted from source table staging_terrazas_bookings
+- name: total_hours_booked
+  type: double
+  description: Field total_hours_booked extracted from source table staging_terrazas_bookings
+- name: base_venue_price
+  type: double
+  description: Field base_venue_price extracted from source table staging_terrazas_bookings
+- name: seasonal_multiplier
+  type: double
+  description: Field seasonal_multiplier extracted from source table staging_terrazas_bookings
+- name: inventory_rentals_json
+  type: varchar
+  description: Field inventory_rentals_json extracted from source table staging_terrazas_bookings
+- name: service_addons_json
+  type: varchar
+  description: Field service_addons_json extracted from source table staging_terrazas_bookings
+- name: security_deposit_held
+  type: double
+  description: Field security_deposit_held extracted from source table staging_terrazas_bookings
+- name: cleaning_fee
+  type: double
+  description: Field cleaning_fee extracted from source table staging_terrazas_bookings
+- name: total_gross_amount
+  type: double
+  description: Field total_gross_amount extracted from source table staging_terrazas_bookings
+- name: payment_status
+  type: varchar
+  description: Field payment_status extracted from source table staging_terrazas_bookings
+- name: contract_signed_status
+  type: boolean
+  description: Field contract_signed_status extracted from source table staging_terrazas_bookings
+- name: cancellation_policy_type
+  type: varchar
+  description: Field cancellation_policy_type extracted from source table staging_terrazas_bookings
+- name: lead_time_days
+  type: integer
+  description: Field lead_time_days extracted from source table staging_terrazas_bookings
+- name: customer_rating_score
+  type: integer
+  description: Field customer_rating_score extracted from source table staging_terrazas_bookings
+- name: local_search_demand_score
+  type: integer
+  description: Field local_search_demand_score extracted from source table staging_terrazas_bookings
+primary_key: reservation_id

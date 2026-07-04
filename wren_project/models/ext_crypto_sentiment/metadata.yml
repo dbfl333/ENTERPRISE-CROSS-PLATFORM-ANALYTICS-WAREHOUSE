@@ -1,0 +1,15 @@
+name: ext_crypto_sentiment
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_crypto_sentiment
+columns:
+- name: value
+  type: integer
+  description: Field value extracted from source table ext_crypto_sentiment
+- name: value_classification
+  type: varchar
+  description: Field value_classification extracted from source table ext_crypto_sentiment
+- name: timestamp
+  type: integer
+  description: Field timestamp extracted from source table ext_crypto_sentiment

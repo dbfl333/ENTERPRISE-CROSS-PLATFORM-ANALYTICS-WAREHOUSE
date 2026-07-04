@@ -1,0 +1,15 @@
+name: dim_assets
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: dim_assets
+columns:
+- name: asset_pair
+  type: varchar
+  description: Field asset_pair extracted from source table dim_assets
+- name: asset_name
+  type: varchar
+  description: Field asset_name extracted from source table dim_assets
+- name: asset_class
+  type: varchar
+  description: Field asset_class extracted from source table dim_assets

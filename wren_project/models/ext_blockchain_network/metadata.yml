@@ -1,0 +1,24 @@
+name: ext_blockchain_network
+table_reference:
+  catalog: analytics_production
+  schema: main
+  table: ext_blockchain_network
+columns:
+- name: market_price_usd
+  type: double
+  description: Field market_price_usd extracted from source table ext_blockchain_network
+- name: hash_rate
+  type: double
+  description: Field hash_rate extracted from source table ext_blockchain_network
+- name: total_fees_btc
+  type: double
+  description: Field total_fees_btc extracted from source table ext_blockchain_network
+- name: n_btc_mined
+  type: double
+  description: Field n_btc_mined extracted from source table ext_blockchain_network
+- name: minutes_between_blocks
+  type: double
+  description: Field minutes_between_blocks extracted from source table ext_blockchain_network
+- name: timestamp
+  type: integer
+  description: Field timestamp extracted from source table ext_blockchain_network
