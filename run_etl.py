@@ -12,7 +12,9 @@ def run_etl_pipeline():
         ("Shopify Extractor", "01_api_ingestion/shopify_extractor.py"),
         ("Binance Extractor", "01_api_ingestion/binance_extractor.py"),
         ("Market Demand Extractor", "01_api_ingestion/market_demand_extractor.py"),
-        ("Terrazas Extractor", "01_api_ingestion/terrazas_extractor.py")
+        ("Terrazas Extractor", "01_api_ingestion/terrazas_extractor.py"),
+        ("GA4 Sessions Extractor", "01_api_ingestion/ga4_extractor.py"),
+        ("Shopify Marketing Extractor", "01_api_ingestion/shopify_marketing_extractor.py"),
     ]
     
     for name, path in extractors:

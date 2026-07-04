@@ -9,24 +9,35 @@ st.set_page_config(page_title="Prompt Labs Market Demand - Analytics Warehouse",
 st.title("🤖 Tenant C: Agentic Prompt Labs")
 st.markdown("Staging viewport for AI Agent market demand trends, Google search interest, and keyword CPC estimations.")
 
-# Active Ingestion Alert Banner
-st.success("🟢 **Project Status: Live Market Demand Ingestion Active**  \nGlobal search volumes, organic dificultades, and CPC benchmarks are actively scraped into DuckDB to support pre-launch pricing model validation.")
+st.success("🟢 **Project Status: Live Market Demand Ingestion Active**  \nGlobal search volumes, organic difficulty scores, and CPC benchmarks are actively scraped into DuckDB to support pre-launch pricing model validation.")
 
-db_path = "04_clean_data/analytics_production.duckdb"
-if not os.path.exists(db_path):
+DB_PATH = "04_clean_data/analytics_production.duckdb"
+if not os.path.exists(DB_PATH):
     st.warning("⚠️ Production database not found. Please run the ETL pipeline.")
     st.stop()
 
-conn = duckdb.connect(db_path, read_only=True)
 
-# Fetch Staging stats
-try:
-    schema_info = conn.execute("PRAGMA table_info('staging_prompt_telemetry')").df()
-    row_count = conn.execute("SELECT COUNT(*) FROM staging_prompt_telemetry").fetchone()[0]
-    
-    # Keyword summaries
-    kw_stats = conn.execute("""
-        SELECT 
+@st.cache_data
+def load_row_count():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    count = conn.execute("SELECT COUNT(*) FROM staging_prompt_telemetry").fetchone()[0]
+    conn.close()
+    return count
+
+
+@st.cache_data
+def load_schema_info():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("PRAGMA table_info('staging_prompt_telemetry')").df()
+    conn.close()
+    return df
+
+
+@st.cache_data
+def load_keyword_stats():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("""
+        SELECT
             keyword_tracked as keyword,
             AVG(search_interest_score) as avg_interest,
             AVG(organic_difficulty) as avg_difficulty,
@@ -35,9 +46,25 @@ try:
         FROM staging_prompt_telemetry
         GROUP BY 1
     """).df()
-except Exception as e:
-    st.error(f"Error querying staging table schema: {e}")
-    st.stop()
+    conn.close()
+    return df
+
+
+@st.cache_data
+def load_trends_timeline():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("""
+        SELECT search_date as date, keyword_tracked as keyword, search_interest_score
+        FROM staging_prompt_telemetry
+        ORDER BY search_date ASC
+    """).df()
+    conn.close()
+    return df
+
+
+row_count = load_row_count()
+schema_info = load_schema_info()
+kw_stats = load_keyword_stats()
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Ingested Trend Records", f"{row_count:,}")
@@ -47,15 +74,7 @@ col3.metric("Data Quality Hygiene", "100% Clean")
 st.write("---")
 
 st.subheader("📈 Search Interest Timeline (Last 8 Months)")
-
-# Fetch trends dataset for charting
-trends_df = conn.execute("""
-    SELECT search_date as date, keyword_tracked as keyword, search_interest_score
-    FROM staging_prompt_telemetry
-    ORDER BY search_date ASC
-""").df()
-
-# Format date
+trends_df = load_trends_timeline()
 trends_df['date_str'] = pd.to_datetime(trends_df['date']).dt.strftime('%Y-%m-%d')
 
 chart = alt.Chart(trends_df).mark_line(strokeWidth=2.5).encode(
@@ -64,12 +83,10 @@ chart = alt.Chart(trends_df).mark_line(strokeWidth=2.5).encode(
     color=alt.Color("keyword:N", title="Keyword", scale=alt.Scale(scheme="set1")),
     tooltip=["date_str", "keyword", "search_interest_score"]
 ).properties(height=350)
-
 st.altair_chart(chart, use_container_width=True)
 
 st.write("---")
 
-# Display keyword summary
 st.subheader("🔍 Keyword Market Performance Summary")
 st.dataframe(kw_stats.rename(columns={
     'keyword': 'Keyword Tracked',
@@ -82,18 +99,9 @@ st.dataframe(kw_stats.rename(columns={
 st.write("---")
 
 st.subheader("📋 Verified Target Staging SQL Schema")
-st.markdown("This schema is provisioned inside `analytics_production.duckdb` and stores 20 Google Trends and bidding fields:")
-
-# Format schema table info for better readability
 schema_info_styled = schema_info[['cid', 'name', 'type', 'notnull', 'dflt_value', 'pk']].rename(
-    columns={
-        'cid': 'Column ID',
-        'name': 'Field Name',
-        'type': 'SQL Data Type',
-        'notnull': 'Not Null',
-        'dflt_value': 'Default Value',
-        'pk': 'Primary Key'
-    }
+    columns={'cid': 'Column ID', 'name': 'Field Name', 'type': 'SQL Data Type',
+             'notnull': 'Not Null', 'dflt_value': 'Default Value', 'pk': 'Primary Key'}
 )
 st.table(schema_info_styled)
 
@@ -110,6 +118,4 @@ if os.path.exists(csv_path):
     except Exception as e:
         st.error(f"Error reading CSV header: {e}")
 else:
-    st.error(f"File '{csv_path}' was not found.")
-
-conn.close()
+    st.info(f"File '{csv_path}' not found locally — run the ETL pipeline to generate it.")

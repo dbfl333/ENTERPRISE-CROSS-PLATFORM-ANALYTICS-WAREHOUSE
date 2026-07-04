@@ -4,3 +4,8 @@ faker>=22.0.0
 pandas>=2.0.0
 pyarrow>=14.0.0
 pytrends>=4.9.0
+altair>=5.0.0
+requests>=2.31.0
+python-dotenv>=1.0.0
+# Optional: Install for live GA4 API extraction
+# google-analytics-data>=0.18.0

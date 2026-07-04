@@ -129,6 +129,57 @@ SELECT
 FROM clean_binance_btc;
 
 
--- 4. Cleanup Working Temporary Tables
+-- 4. Create GA4 Traffic & Session Staging Table (Tenant A — Google Analytics)
+CREATE OR REPLACE TABLE staging_ga4_sessions AS
+SELECT
+    CAST(ROW_NUMBER() OVER () AS VARCHAR) AS record_id,
+    CAST(session_date AS VARCHAR) AS session_date,
+    CAST(session_source AS VARCHAR) AS session_source,
+    CAST(session_medium AS VARCHAR) AS session_medium,
+    CAST(campaign_name AS VARCHAR) AS campaign_name,
+    CAST(landing_page AS VARCHAR) AS landing_page,
+    CAST(country AS VARCHAR) AS country,
+    CAST(device_category AS VARCHAR) AS device_category,
+    CAST(operating_system AS VARCHAR) AS operating_system,
+    CAST(browser AS VARCHAR) AS browser,
+    CAST(sessions AS INTEGER) AS sessions,
+    CAST(new_users AS INTEGER) AS new_users,
+    CAST(bounce_rate AS DOUBLE) AS bounce_rate,
+    CAST(avg_session_duration_sec AS DOUBLE) AS avg_session_duration_sec,
+    CAST(page_views AS INTEGER) AS page_views,
+    CAST(conversions AS INTEGER) AS conversions,
+    CAST(total_revenue AS DECIMAL(10,2)) AS total_revenue,
+    CAST(data_source AS VARCHAR) AS data_source,
+    CAST(extraction_date AS VARCHAR) AS extraction_date
+FROM read_csv_auto('02_raw_data/ga4_sessions.csv');
+
+
+-- 5. Create Shopify Marketing Events Staging Table (Tenant A — Marketing Attribution)
+CREATE OR REPLACE TABLE staging_shopify_marketing AS
+SELECT
+    CAST(event_id AS VARCHAR) AS event_id,
+    CAST(started_at AS VARCHAR) AS started_at,
+    CAST(ended_at AS VARCHAR) AS ended_at,
+    CAST(scheduled_to_end AS VARCHAR) AS scheduled_to_end,
+    CAST(budget AS DECIMAL(10,2)) AS budget,
+    CAST(currency AS VARCHAR) AS currency,
+    CAST(event_type AS VARCHAR) AS event_type,
+    CAST(source AS VARCHAR) AS source,
+    CAST(channel AS VARCHAR) AS channel,
+    CAST(utm_source AS VARCHAR) AS utm_source,
+    CAST(utm_medium AS VARCHAR) AS utm_medium,
+    CAST(utm_campaign AS VARCHAR) AS utm_campaign,
+    CAST(paid_budget_percent_used AS DOUBLE) AS paid_budget_percent_used,
+    CAST(impressions AS INTEGER) AS impressions,
+    CAST(clicks AS INTEGER) AS clicks,
+    CAST(click_through_rate AS DOUBLE) AS click_through_rate,
+    CAST(spend AS DECIMAL(10,2)) AS spend,
+    CAST(conversions_attributed AS INTEGER) AS conversions_attributed,
+    CAST(attributed_revenue AS DECIMAL(10,2)) AS attributed_revenue,
+    CAST(roas AS DOUBLE) AS roas
+FROM read_csv_auto('02_raw_data/shopify_marketing_events.csv');
+
+
+-- 6. Cleanup Working Temporary Tables
 DROP TABLE clean_shop_orders;
 DROP TABLE clean_binance_btc;

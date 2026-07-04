@@ -43,35 +43,40 @@ st.markdown("""
 st.title("📊 Executive Operations Overview")
 st.markdown("Consolidated real-time KPIs and system operational integrity dashboards across all live and staging business tenants.")
 
-db_path = "04_clean_data/analytics_production.duckdb"
+DB_PATH = "04_clean_data/analytics_production.duckdb"
 
-if not os.path.exists(db_path):
+if not os.path.exists(DB_PATH):
     st.warning("⚠️ The production database `analytics_production.duckdb` was not found. Please run the ETL pipeline first.")
     st.stop()
 
-# Connect to DuckDB
-conn = duckdb.connect(db_path, read_only=True)
 
-# Fetch KPIs
-try:
-    # Tenant A (Shopify API) KPIs
-    shop_kpis = conn.execute("""
-        SELECT 
-            COUNT(*) as total_orders,
-            SUM(total_amount) as total_revenue
+@st.cache_data
+def load_shop_kpis():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    result = conn.execute("""
+        SELECT COUNT(*) as total_orders, SUM(total_amount) as total_revenue
         FROM fact_shop_orders
     """).fetchone()
+    conn.close()
+    return result
 
-    # Tenant B (Binance API) KPIs - Latest BTC close price
-    binance_kpis = conn.execute("""
-        SELECT 
-            close_price,
-            trade_volume
+
+@st.cache_data
+def load_binance_kpis():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    result = conn.execute("""
+        SELECT close_price, trade_volume
         FROM fact_binance_klines
         ORDER BY open_timestamp DESC
         LIMIT 1
     """).fetchone()
+    conn.close()
+    return result
 
+
+try:
+    shop_kpis = load_shop_kpis()
+    binance_kpis = load_binance_kpis()
 except Exception as e:
     st.error(f"Error querying data warehouse schema: {e}")
     st.stop()
@@ -129,5 +134,3 @@ with c2:
         <p style='font-size: 0.9rem; color: #B2B2B2;'>Staging table <code>staging_terrazas_bookings</code> is successfully provisioned and verified in DuckDB. No fake data allowed.</p>
     </div>
     """, unsafe_allow_html=True)
-
-conn.close()

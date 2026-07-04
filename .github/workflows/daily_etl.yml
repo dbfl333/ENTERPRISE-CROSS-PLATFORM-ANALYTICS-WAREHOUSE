@@ -1,4 +1,4 @@
-name: Nightly ETL pipeline Ingestion
+name: Nightly ETL Pipeline Ingestion
 
 on:
   schedule:
@@ -22,7 +22,7 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install --upgrade pip
-          pip install duckdb pandas requests
+          pip install duckdb pandas requests pytrends faker altair pyarrow
 
       - name: Execute Live API Ingestion Pipelines
         env:
@@ -32,10 +32,14 @@ jobs:
           # Write environment variables to local .env for extractors
           echo "SHOPIFY_ACCESS_TOKEN=$SHOPIFY_ACCESS_TOKEN" > .env
           echo "SHOPIFY_STORE_DOMAIN=${SHOPIFY_STORE_DOMAIN:-14e953-bc.myshopify.com}" >> .env
-          
-          # Run Shopify and Binance API Extractors
+
+          # Run all 6 API Extractors
           python 01_api_ingestion/shopify_extractor.py
           python 01_api_ingestion/binance_extractor.py
+          python 01_api_ingestion/market_demand_extractor.py
+          python 01_api_ingestion/terrazas_extractor.py
+          python 01_api_ingestion/ga4_extractor.py
+          python 01_api_ingestion/shopify_marketing_extractor.py
 
       - name: Compile Analytical Warehouse (DuckDB ETL)
         run: |
@@ -45,9 +49,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # We only commit changes to raw tracking data (if tracking is tracked) 
-          # and any pipeline artifacts that are not excluded by .gitignore.
-          # Note: *.duckdb and *.csv are excluded in gitignore by design to keep them locally isolated.
+
+          # Note: *.duckdb and *.csv are excluded in .gitignore by design to keep them locally isolated.
           git add -A
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated ETL: Nightly sync complete" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Automated ETL: Nightly sync complete [$(date -u +%Y-%m-%d)]" && git push)

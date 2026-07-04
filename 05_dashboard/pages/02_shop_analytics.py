@@ -9,32 +9,78 @@ st.set_page_config(page_title="Shopify Analytics - Analytics Warehouse", layout=
 st.title("🛒 Shopify Funnel & Conversion Analytics")
 st.markdown("Detailed checkout funnel tracking, device conversion metrics, and price resistance analysis from Shopify Admin API logs.")
 
-db_path = "04_clean_data/analytics_production.duckdb"
-if not os.path.exists(db_path):
+DB_PATH = "04_clean_data/analytics_production.duckdb"
+if not os.path.exists(DB_PATH):
     st.warning("⚠️ Production database not found. Please run the ETL pipeline.")
     st.stop()
 
-conn = duckdb.connect(db_path, read_only=True)
 
-# Fetch stats
-stats = conn.execute("""
-    SELECT 
-        COUNT(*) as total_checkouts,
-        COUNT(completed_at) as completed_conversions,
-        COALESCE(SUM(CASE WHEN completed_at IS NOT NULL THEN total_amount ELSE 0 END), 0) as gross_rev,
-        COALESCE(AVG(CASE WHEN completed_at IS NOT NULL THEN time_in_funnel_seconds END), 0) as avg_time_in_funnel,
-        COALESCE(SUM(total_discounts), 0) as total_discounts,
-        COALESCE(SUM(CASE WHEN buyer_accepts_marketing THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 0) as marketing_opt_in_pct
-    FROM fact_shop_orders
-""").fetchone()
+@st.cache_data
+def load_shop_stats():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    result = conn.execute("""
+        SELECT
+            COUNT(*) as total_checkouts,
+            COUNT(completed_at) as completed_conversions,
+            COALESCE(SUM(CASE WHEN completed_at IS NOT NULL THEN total_amount ELSE 0 END), 0) as gross_rev,
+            COALESCE(AVG(CASE WHEN completed_at IS NOT NULL THEN time_in_funnel_seconds END), 0) as avg_time_in_funnel,
+            COALESCE(SUM(total_discounts), 0) as total_discounts,
+            COALESCE(SUM(CASE WHEN buyer_accepts_marketing THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 0) as marketing_opt_in_pct
+        FROM fact_shop_orders
+    """).fetchone()
+    conn.close()
+    return result
 
-total_checkouts = stats[0]
-conversions = stats[1]
-rev = stats[2]
-avg_time = stats[3]
-discounts = stats[4]
-opt_in = stats[5]
 
+@st.cache_data
+def load_device_breakdown():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("""
+        SELECT
+            device_type,
+            COUNT(*) as total_checkouts,
+            COUNT(completed_at) as completions,
+            (COUNT(completed_at) * 100.0 / COUNT(*)) as conv_rate
+        FROM fact_shop_orders
+        GROUP BY 1
+    """).df()
+    conn.close()
+    return df
+
+
+@st.cache_data
+def load_cancellations():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("""
+        SELECT cancel_reason, COUNT(*) as count
+        FROM fact_shop_orders
+        WHERE completed_at IS NULL AND cancel_reason != ''
+        GROUP BY 1
+        ORDER BY count DESC
+    """).df()
+    conn.close()
+    return df
+
+
+@st.cache_data
+def load_funnel_ledger():
+    conn = duckdb.connect(DB_PATH, read_only=True)
+    df = conn.execute("""
+        SELECT
+            checkout_id, customer_id, customer_locale, referring_site, landing_site,
+            abandoned_checkout_url, created_at, completed_at, time_in_funnel_seconds,
+            currency, subtotal_price, total_discounts, total_tax, total_amount as total_price,
+            financial_status, cart_token, device_type, browser_ip,
+            buyer_accepts_marketing, cancel_reason
+        FROM fact_shop_orders
+        ORDER BY created_at DESC
+    """).df()
+    conn.close()
+    return df
+
+
+stats = load_shop_stats()
+total_checkouts, conversions, rev, avg_time, discounts, opt_in = stats
 conv_rate = (conversions / total_checkouts * 100.0) if total_checkouts > 0 else 0.0
 
 col1, col2, col3, col4 = st.columns(4)
@@ -57,17 +103,7 @@ c1, c2 = st.columns([1, 1])
 
 with c1:
     st.subheader("Funnel Drops by Device Type")
-    # Fetch device conversion distribution
-    device_df = conn.execute("""
-        SELECT 
-            device_type, 
-            COUNT(*) as total_checkouts,
-            COUNT(completed_at) as completions,
-            (COUNT(completed_at) * 100.0 / COUNT(*)) as conv_rate
-        FROM fact_shop_orders
-        GROUP BY 1
-    """).df()
-    
+    device_df = load_device_breakdown()
     device_chart = alt.Chart(device_df).mark_bar().encode(
         x=alt.X("device_type:N", title="Device Type"),
         y=alt.Y("conv_rate:Q", title="Conversion Rate (%)"),
@@ -78,15 +114,7 @@ with c1:
 
 with c2:
     st.subheader("Primary Checkout Cancellation Reasons")
-    # Fetch cancellation reasons
-    cancel_df = conn.execute("""
-        SELECT cancel_reason, COUNT(*) as count
-        FROM fact_shop_orders
-        WHERE completed_at IS NULL AND cancel_reason != ''
-        GROUP BY 1
-        ORDER BY count DESC
-    """).df()
-    
+    cancel_df = load_cancellations()
     cancel_chart = alt.Chart(cancel_df).mark_arc(innerRadius=40).encode(
         theta=alt.Theta("count:Q"),
         color=alt.Color("cancel_reason:N", scale=alt.Scale(scheme="tableau10")),
@@ -98,33 +126,4 @@ st.write("---")
 
 st.subheader("Live Ingested Shopify Funnel Ledger")
 st.markdown("Raw 20-point conversion log dataset used to train ML funnel drop models:")
-
-ledger_df = conn.execute("""
-    SELECT 
-        checkout_id,
-        customer_id,
-        customer_locale,
-        referring_site,
-        landing_site,
-        abandoned_checkout_url,
-        created_at,
-        completed_at,
-        time_in_funnel_seconds,
-        currency,
-        subtotal_price,
-        total_discounts,
-        total_tax,
-        total_amount as total_price,
-        financial_status,
-        cart_token,
-        device_type,
-        browser_ip,
-        buyer_accepts_marketing,
-        cancel_reason
-    FROM fact_shop_orders
-    ORDER BY created_at DESC
-""").df()
-
-st.dataframe(ledger_df, use_container_width=True)
-
-conn.close()
+st.dataframe(load_funnel_ledger(), use_container_width=True)
