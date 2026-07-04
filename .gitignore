@@ -30,3 +30,6 @@ Thumbs.db
 # Data Landing Zone & CSV Payload Exclusions
 # *.csv
 # 02_raw_data/
+
+# Whitelist WebAssembly App DB snapshot binary
+!wren_project/apps/my_bi_app/data/analytics_production.duckdb
