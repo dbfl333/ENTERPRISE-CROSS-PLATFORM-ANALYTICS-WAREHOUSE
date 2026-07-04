@@ -6,8 +6,11 @@ import altair as alt
 
 st.set_page_config(page_title="G-Trend Screener - Binance Market", layout="wide")
 
-st.title("📈 Binance Market Data Analytics")
-st.markdown("Historical Bitcoin (BTCUSDT) daily candlestick data, trading volumes, and volatility metrics directly from the public Binance API.")
+st.sidebar.header("📊 Market Selector")
+selected_symbol = st.sidebar.selectbox("Select Asset Pair", ["BTCUSDT", "ETHUSDT", "SOLUSDT"])
+
+st.title(f"📈 {selected_symbol} Market Data & Screener")
+st.markdown(f"Historical {selected_symbol} daily candlestick indicators and live strategy evaluations.")
 
 db_path = "04_clean_data/analytics_production.duckdb"
 if not os.path.exists(db_path):
@@ -16,14 +19,34 @@ if not os.path.exists(db_path):
 
 conn = duckdb.connect(db_path, read_only=True)
 
-# Fetch general stats
-stats = conn.execute("""
+# Fetch latest record for selected symbol to evaluate live signal
+latest = conn.execute(f"""
+    SELECT 
+        close_price,
+        rsi_14,
+        macd_line,
+        macd_signal,
+        sma_20,
+        sma_50,
+        screener_good_pair_flag,
+        timestamp_fetched,
+        daily_change_percent,
+        volatility_index
+    FROM fact_binance_klines
+    WHERE symbol = '{selected_symbol}'
+    ORDER BY open_timestamp DESC
+    LIMIT 1
+""").fetchone()
+
+# General stats for selected symbol
+stats = conn.execute(f"""
     SELECT 
         COUNT(*) as total_candles,
         AVG(close_price) as avg_close,
         MAX(high_price) as max_high,
         MIN(low_price) as min_low
     FROM fact_binance_klines
+    WHERE symbol = '{selected_symbol}'
 """).fetchone()
 
 col1, col2, col3, col4 = st.columns(4)
@@ -34,29 +57,76 @@ col4.metric("Min Low (Period)", f"${stats[3]:,.2f}")
 
 st.write("---")
 
-# Fetch and order candles
-candles_df = conn.execute("""
+# Screener Alert Banner
+st.subheader("⚡ Live Pair Screener Status")
+if latest:
+    c_price, rsi, macd, sig, sma20, sma50, good_pair, t_stamp, change, vol = latest
+    
+    col_sig, col_m1, col_m2, col_m3 = st.columns([1.5, 1, 1, 1])
+    
+    with col_sig:
+        if good_pair:
+            st.success(f"🟢 **SCREENER SIGNAL: GOOD PAIR**\n\n{selected_symbol} satisfies bullish trend criteria.")
+        else:
+            st.error(f"🔴 **SCREENER SIGNAL: AVOID / NO SIGNAL**\n\n{selected_symbol} does not satisfy criteria.")
+            
+    with col_m1:
+        st.metric("Latest Close", f"${c_price:,.2f}", f"{change:+.2f}% (24h)")
+    with col_m2:
+        st.metric("RSI (14)", f"{rsi:.2f}", "Neutral" if 30 <= rsi <= 70 else ("Overbought" if rsi > 70 else "Oversold"))
+    with col_m3:
+        st.metric("Volatility Index", f"{vol:.2f}%")
+        
+    st.caption(f"Last fetched from Binance: {t_stamp}")
+else:
+    st.warning(f"No recent records found for {selected_symbol}.")
+
+st.write("---")
+
+# Fetch and order candles for charting
+candles_df = conn.execute(f"""
     SELECT 
         open_timestamp as date,
         open_price,
         high_price,
         low_price,
         close_price,
-        trade_volume
+        trade_volume,
+        sma_20,
+        sma_50,
+        rsi_14
     FROM fact_binance_klines
+    WHERE symbol = '{selected_symbol}'
     ORDER BY open_timestamp ASC
 """).df()
 
 # Convert date to string format for display
 candles_df['date_str'] = candles_df['date'].dt.strftime('%Y-%m-%d')
 
-st.subheader("BTCUSDT Historical Close Price Trend")
-price_chart = alt.Chart(candles_df).mark_line(color="#00E5FF").encode(
-    x=alt.X("date_str:N", title="Date (UTC)"),
-    y=alt.Y("close_price:Q", title="Close Price ($)", scale=alt.Scale(zero=False)),
-    tooltip=["date_str", "open_price", "high_price", "low_price", "close_price"]
-).properties(height=350)
+st.subheader(f"{selected_symbol} Historical Close Price Trend with SMA Overlays")
 
+# Base chart
+base = alt.Chart(candles_df).encode(x=alt.X("date_str:N", title="Date (UTC)"))
+
+# Close line
+close_line = base.mark_line(color="#00E5FF", strokeWidth=2).encode(
+    y=alt.Y("close_price:Q", title="Price ($)", scale=alt.Scale(zero=False)),
+    tooltip=["date_str", "close_price"]
+)
+
+# SMA 20 line
+sma20_line = base.mark_line(color="#FFD700", strokeDash=[4, 4]).encode(
+    y=alt.Y("sma_20:Q"),
+    tooltip=["date_str", "sma_20"]
+)
+
+# SMA 50 line
+sma50_line = base.mark_line(color="#FF4500", strokeDash=[2, 2]).encode(
+    y=alt.Y("sma_50:Q"),
+    tooltip=["date_str", "sma_50"]
+)
+
+price_chart = alt.layer(close_line, sma20_line, sma50_line).properties(height=350)
 st.altair_chart(price_chart, use_container_width=True)
 
 st.write("---")
@@ -64,18 +134,23 @@ st.write("---")
 c1, c2 = st.columns([1, 1])
 
 with c1:
-    st.subheader("BTC Daily Trading Volume Trend")
-    volume_chart = alt.Chart(candles_df).mark_bar(color="#7D2AE8").encode(
+    st.subheader("Relative Strength Index (RSI-14)")
+    # Plot RSI
+    rsi_chart = alt.Chart(candles_df).mark_line(color="#7D2AE8").encode(
         x=alt.X("date_str:N", title="Date"),
-        y=alt.Y("trade_volume:Q", title="Volume (BTC)"),
-        tooltip=["date_str", "trade_volume"]
-    ).properties(height=300)
-    st.altair_chart(volume_chart, use_container_width=True)
+        y=alt.Y("rsi_14:Q", title="RSI", scale=alt.Scale(domain=[10, 90])),
+        tooltip=["date_str", "rsi_14"]
+    ).properties(height=250)
+    
+    # Overbought/Oversold lines
+    rules = alt.Chart(pd.DataFrame({'y': [30, 50, 70]})).mark_rule(color='red', strokeDash=[2, 2]).encode(y='y')
+    
+    st.altair_chart(rsi_chart + rules, use_container_width=True)
 
 with c2:
-    st.subheader("Recent Historical Market Data Ledger")
+    st.subheader("Historical Candlestick & Indicator Ledger")
     # Display the last 100 entries sorted descending
-    recent_df = conn.execute("""
+    recent_df = conn.execute(f"""
         SELECT 
             open_timestamp,
             open_price,
@@ -83,8 +158,16 @@ with c2:
             low_price,
             close_price,
             trade_volume,
-            total_trades
+            rsi_14,
+            macd_line,
+            macd_signal,
+            sma_20,
+            sma_50,
+            daily_change_percent,
+            volatility_index,
+            screener_good_pair_flag
         FROM fact_binance_klines
+        WHERE symbol = '{selected_symbol}'
         ORDER BY open_timestamp DESC
         LIMIT 100
     """).df()

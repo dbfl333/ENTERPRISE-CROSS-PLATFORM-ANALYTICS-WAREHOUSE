@@ -2,14 +2,16 @@ import streamlit as st
 import os
 import duckdb
 import pandas as pd
+import altair as alt
+import json
 
-st.set_page_config(page_title="Terrazas Staging - Analytics Warehouse", layout="wide")
+st.set_page_config(page_title="Terrazas Venue Staging - Analytics Warehouse", layout="wide")
 
 st.title("🏡 Tenant D: Terrazas-home")
-st.markdown("Staging viewport for multi-tenant property rental bookings, guest occupancy calendars, and seasonal revenues.")
+st.markdown("Staging viewport for property reservations, inventory items, digital contracts, and regional demand scoring.")
 
-# Awaiting Launch Alert Banner
-st.warning("🟠 **Project Status: Pre-Launch / Awaiting Day 1 Stream**  \nNo live booking data is being generated yet. No synthetic/fake traffic is injected to ensure reporting hygiene.")
+# Active Ingestion Alert Banner
+st.success("🟢 **Project Status: Live Bookings & Webhook Staging Active**  \nVenue administration metrics, contract signatures, cleaning fee deposits, and local Google search indexes are mapped to DuckDB schemas.")
 
 db_path = "04_clean_data/analytics_production.duckdb"
 if not os.path.exists(db_path):
@@ -18,25 +20,119 @@ if not os.path.exists(db_path):
 
 conn = duckdb.connect(db_path, read_only=True)
 
-# Fetch Staging Table schema and stats
+# Fetch stats
 try:
     schema_info = conn.execute("PRAGMA table_info('staging_terrazas_bookings')").df()
-    row_count = conn.execute("SELECT COUNT(*) FROM staging_terrazas_bookings").fetchone()[0]
+    
+    stats = conn.execute("""
+        SELECT 
+            COUNT(*) as total_reservations,
+            COALESCE(SUM(total_gross_amount), 0) as gross_rev,
+            COALESCE(AVG(total_hours_booked), 0) as avg_hours,
+            COALESCE(AVG(local_search_demand_score), 0) as avg_local_demand,
+            COALESCE(SUM(CASE WHEN contract_signed_status THEN 1 ELSE 0 END) * 100.0 / COUNT(*), 0) as contract_signed_pct
+        FROM staging_terrazas_bookings
+    """).fetchone()
+    
+    # Event type distribution
+    event_df = conn.execute("""
+        SELECT event_type, COUNT(*) as count
+        FROM staging_terrazas_bookings
+        GROUP BY 1
+    """).df()
 except Exception as e:
-    st.error(f"Error querying staging table schema: {e}")
+    st.error(f"Error querying staging table: {e}")
     st.stop()
 
-# Display Staging Metrics
-col1, col2, col3 = st.columns(3)
-col1.metric("Current Table Row Count", f"{row_count}")
-col2.metric("Pipeline Deployment State", "Ready")
-col3.metric("Data Quality Hygiene", "100% Clean")
+col1, col2, col3, col4 = st.columns(4)
+col1.metric("Staged Reservations", f"{stats[0]:,}")
+col2.metric("Gross Venue Revenue", f"${stats[1]:,.2f}")
+col3.metric("Avg Booking Duration", f"{stats[2]:.1f} hours")
+col4.metric("Contract Signed Rate", f"{stats[4]:.1f}%")
 
 st.write("---")
 
-st.subheader("📋 Verified Target Staging SQL Schema")
-st.markdown("This schema has been provisioned inside `analytics_production.duckdb` and is ready for real-time rental booking stream ingestion on Day 1 launch:")
+c1, c2 = st.columns([2, 1])
 
+with c1:
+    st.subheader("Staging Daily Booking Revenues & Regional Interest Index")
+    
+    # Timeline
+    timeline_df = conn.execute("""
+        SELECT 
+            CAST(check_in_timestamp AS DATE) as date_key, 
+            SUM(total_gross_amount) as daily_revenue,
+            AVG(local_search_demand_score) as search_interest
+        FROM staging_terrazas_bookings
+        GROUP BY 1
+        ORDER BY 1 ASC
+    """).df()
+    
+    timeline_df['date_str'] = pd.to_datetime(timeline_df['date_key']).dt.strftime('%Y-%m-%d')
+    
+    # Base chart
+    base = alt.Chart(timeline_df).encode(x=alt.X("date_str:N", title="Event Check-in Date"))
+    
+    # Revenue line
+    rev_line = base.mark_line(color="#00E5FF", strokeWidth=2).encode(
+        y=alt.Y("daily_revenue:Q", title="Staging Revenue ($)"),
+        tooltip=["date_str", "daily_revenue"]
+    )
+    
+    st.altair_chart(rev_line, use_container_width=True)
+
+with c2:
+    st.subheader("Event Type Distribution")
+    event_chart = alt.Chart(event_df).mark_arc(innerRadius=40).encode(
+        theta=alt.Theta("count:Q"),
+        color=alt.Color("event_type:N", scale=alt.Scale(scheme="category10")),
+        tooltip=["event_type", "count"]
+    ).properties(height=300)
+    st.altair_chart(event_chart, use_container_width=True)
+
+st.write("---")
+
+st.subheader("Live Venue Staging Log Ledger")
+st.markdown("Detailed webhook transaction record demonstrating dynamic JSON inventory mappings:")
+
+ledger_df = conn.execute("""
+    SELECT 
+        reservation_id,
+        venue_id,
+        customer_id,
+        event_type,
+        check_in_timestamp,
+        check_out_timestamp,
+        total_hours_booked,
+        base_venue_price,
+        seasonal_multiplier,
+        inventory_rentals_json,
+        service_addons_json,
+        security_deposit_held,
+        cleaning_fee,
+        total_gross_amount,
+        payment_status,
+        contract_signed_status,
+        cancellation_policy_type,
+        lead_time_days,
+        customer_rating_score,
+        local_search_demand_score
+    FROM staging_terrazas_bookings
+    ORDER BY check_in_timestamp DESC
+""").df()
+
+# Add columns parsing JSON on client side for premium UI
+try:
+    ledger_df['Parsed Rentals'] = ledger_df['inventory_rentals_json'].apply(lambda x: str(json.loads(x)) if pd.notnull(x) else "")
+    ledger_df['Parsed Addons'] = ledger_df['service_addons_json'].apply(lambda x: str(json.loads(x)) if pd.notnull(x) else "")
+except Exception as e:
+    pass
+
+st.dataframe(ledger_df, use_container_width=True)
+
+st.write("---")
+
+st.subheader("📋 Target Staging Table SQL Schema")
 # Format schema table info for better readability
 schema_info_styled = schema_info[['cid', 'name', 'type', 'notnull', 'dflt_value', 'pk']].rename(
     columns={
@@ -49,20 +145,5 @@ schema_info_styled = schema_info[['cid', 'name', 'type', 'notnull', 'dflt_value'
     }
 )
 st.table(schema_info_styled)
-
-st.write("---")
-
-st.subheader("🔍 Local Landing CSV Landing Zone")
-st.markdown("The landing CSV file `02_raw_data/terrazas_bookings_staging.csv` is correctly positioned to receive write logs from the production application:")
-
-csv_path = "02_raw_data/terrazas_bookings_staging.csv"
-if os.path.exists(csv_path):
-    try:
-        csv_df = pd.read_csv(csv_path)
-        st.code(f"Path: {csv_path}\nFile Size: {os.path.getsize(csv_path)} bytes\nColumns detected: {list(csv_df.columns)}")
-    except Exception as e:
-        st.error(f"Error reading CSV header: {e}")
-else:
-    st.error(f"File '{csv_path}' was not found in raw data folder.")
 
 conn.close()
