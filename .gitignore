@@ -33,3 +33,8 @@ Thumbs.db
 
 # Whitelist WebAssembly App DB snapshot binary
 !wren_project/apps/my_bi_app/data/analytics_production.duckdb
+
+# AI Agent Exclusions
+agents/
+.agents/
+skills-lock.json
